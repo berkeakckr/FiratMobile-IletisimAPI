@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\ConversationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,21 @@ Route::middleware('auth:api')->group(function()
         return \Illuminate\Support\Facades\Auth::user();
     });
 
+});
+
+Route::controller(MessageController::class)->group(function (){
+    Route::get('/messages','index');
+    Route::post('/message','store');
+    Route::get('/message/{id}','show');
+    Route::put('/message/{id}','update');
+    Route::delete('/message/{id}','destroy');
+});
+Route::controller(ConversationController::class)->group(function (){
+    Route::get('/conversations','index');
+    Route::post('/conversation','store');
+    Route::get('/conversation/{id}','show');
+    Route::put('/conversation/{id}','update');
+    Route::delete('/conversation/{id}','destroy');
 });
 
 //Route::get('test',[\App\Http\Controllers\TestController::class,'index']);

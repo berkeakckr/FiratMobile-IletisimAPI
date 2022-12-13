@@ -17,8 +17,10 @@ return new class extends Migration
             $table->id();
             $table->longText('text');
             $table->string('file');
-            $table->unsignedBigInteger('conversation_id');
+            $table->unsignedBigInteger('conversation_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('conversation_id')->references('id')->on('conversations')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
