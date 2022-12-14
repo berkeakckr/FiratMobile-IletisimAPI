@@ -9,4 +9,10 @@ class Conversation extends Model
 {
     protected $fillable = ['title','description','type','everyone_chat'];
     use HasFactory;
+    public function messages(){
+        return $this->hasMany('App\Models\Message');
+    }
+    public function messageCount(){
+        return $this->hasMany('App\Models\Message','conversation_id','id')->count();
+    }
 }

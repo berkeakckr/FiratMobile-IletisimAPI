@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
+use App\Models\Message;
 use Illuminate\Http\Request;
 
 class ConversationController extends Controller
@@ -19,7 +20,11 @@ class ConversationController extends Controller
         if ($conversation == '[]'){
             return response()->json(['message'=>'Sohbet Bulunamadı']);
         }
-        return $conversation;
+        $conversationcount= Message::where('conversation_id','1')->get();
+        if ($conversationcount == '[]'){
+            return response()->json(['message'=>'Bu Kişiye Ait Sohbet Bulunamadı']);
+        }
+        return [$conversation,$conversationcount];
     }
 
     /**
@@ -30,6 +35,10 @@ class ConversationController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+           'title'=>'required|min:1|max:100',
+           'description'=>'max:1000',
+        ]);
         $conversation = new Conversation();
         $conversation->title = $request->title;
         $conversation->description = $request->description;
@@ -55,13 +64,15 @@ class ConversationController extends Controller
     public function show($id)
     {
         $conversation = Conversation::find($id);
+        $messages = Message::where('conversation_id',$conversation->id)->get();
         if (!$conversation){
             return response()->json([
                 'status' => 401,
                 'message' => 'Sohbet Bulunamadı.'
             ]);
         }
-        return $conversation;
+        $messagescount = $messages->count();
+        return [$messages,$messagescount];
     }
 
     /**
@@ -74,8 +85,8 @@ class ConversationController extends Controller
     public function update(Request $request, $id)
     {
         $conversation = Conversation::findOrFail($id);
-        $conversation->title=$request->title;
         $conversation->description=$request->description;
+        $conversation->type=$request->type;
         $conversation->everyone_chat = $request->everyone_chat;
         $conversation->save();
         return response()->json(['message'=>'Sohbet Başarı İle Güncellendi']);
