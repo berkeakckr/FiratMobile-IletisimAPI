@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->longText('text');
-            $table->string('file');
+            $table->string('file')->nullable();
             $table->unsignedBigInteger('conversation_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+
             $table->foreign('conversation_id')->references('id')->on('conversations')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Conversation;
+use App\Models\UserConversation;
 use App\Models\Message;
+use App\Models\Notification;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -33,9 +38,14 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
+      $user_type =UserConversation::where('user_id',$request->user_id)->where('conversation_id',$request->conversation_id)->first()->status;
+        //$user = Auth::user();
+        $user= User::find($request->user_id);
+    if($user_type=='is_akademisyen')
+    {
         //post metodu
         $message = new Message();
+        $conversation = new Conversation();
         $message->text = $request->text;
         if($request->hasFile('file')){
             $imageName=time().rand(1,1000).'.'.$request->file->getClientOriginalExtension();
@@ -44,8 +54,40 @@ class MessageController extends Controller
         }
         $message->user_id = $request->user_id;  //$user->id
         $message->conversation_id = $request->conversation_id;
+        $conversation= Conversation::find($request->conversation_id);
+
         $message->save();
-        return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
+
+        $notification = Notification::create([
+            'message_id' => $message->id,
+            'user_id' => $user->id,
+            //'reached' => $data['email'],
+            // 'readed' => $data['type']
+        ]);
+
+        return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu1']);
+    }
+    else{
+        return response()->json([
+            'error'=>'Bir öğrenci başka bir öğrenciye mesaj atamaz.'
+        ],401);
+    }
+
+
+
+
+       // $conversation->id = $request->conversation_id;
+      /*  if($conversation->type==0 && $conversation->id==1 && $user->type==1)
+        {
+            $message->save();
+            return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
+        }
+
+
+            return response()->json([
+                'error'=>'Bir öğrenci başka bir öğrenciye mesaj atamaz.'
+            ],401);*/
+
     }
 
     /**

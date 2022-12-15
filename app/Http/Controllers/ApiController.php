@@ -68,11 +68,5 @@ public function login(Request $request)
             'success'=>$success
         ], 200);
     }
-       /* // Fire off the internal request.
-        $token = Request::create(
-            'oauth/token',
-            'POST'
-        );
-        return \Route::dispatch($token);
-    }*/
+
 }

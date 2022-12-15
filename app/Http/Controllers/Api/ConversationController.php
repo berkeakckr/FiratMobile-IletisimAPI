@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
+use App\Models\User;
+use App\Models\UserConversation;
 use App\Models\Message;
+use App\Models\Notification;
 use Illuminate\Http\Request;
+use mysql_xdevapi\Collection;
 
 class ConversationController extends Controller
 {
@@ -35,6 +39,8 @@ class ConversationController extends Controller
      */
     public function store(Request $request)
     {
+        //$user = Auth::user();
+        //$user= User::find(1);
         $request->validate([
            'title'=>'required|min:1|max:100',
            'description'=>'max:1000',
@@ -52,6 +58,15 @@ class ConversationController extends Controller
         }
         $conversation->everyone_chat = $request->everyone_chat;
         $conversation->save();
+
+        /*$userconversation = UserConversation::create([
+            'user_id' => $user->id,
+            'conversation_id' => $conversation->id,
+            'is_admin' => $conversation->id,
+            'send_message' => $conversation->id
+            //'reached' => $data['email'],
+            // 'readed' => $data['type']
+        ]);*/
         return response()->json(['message'=>'Sohbet Başarılı Bir Şekilde Oluşturuldu']);
     }
 
@@ -73,6 +88,21 @@ class ConversationController extends Controller
         }
         $messagescount = $messages->count();
         return [$messages,$messagescount];
+    }
+    public function showw($id)
+    {
+        $conversation = Conversation::find($id);
+        $users = UserConversation::where('conversation_id',$conversation->id)->firstOrFail();
+        if (!$conversation){
+            return response()->json([
+                'status' => 401,
+                'message' => 'Sohbet Bulunamadı.'
+            ]);
+        }
+        $get_users=$users->get_Users;
+
+        //$messagescount = $messages->count();
+        return $get_users;
     }
 
     /**
