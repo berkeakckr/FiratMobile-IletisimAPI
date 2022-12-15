@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->string('description')->nullable();
             $table->boolean('type')->nullable();
-            $table->boolean('everyone_chat')->nullable();
+            $table->string('file')->nullable();
+            $table->boolean('everyone_chat')->nullable()->default('1');
             $table->timestamps();
         });
     }

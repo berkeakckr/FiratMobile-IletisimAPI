@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Conversation;
+use App\Models\Message;
 use Illuminate\Http\Request;
 
 class ConversationController extends Controller
@@ -14,7 +16,15 @@ class ConversationController extends Controller
      */
     public function index()
     {
-        //
+        $conversation = Conversation::all();
+        if ($conversation == '[]'){
+            return response()->json(['message'=>'Sohbet Bulunamadı']);
+        }
+        $conversationcount= Message::where('conversation_id','1')->get();
+        if ($conversationcount == '[]'){
+            return response()->json(['message'=>'Bu Kişiye Ait Sohbet Bulunamadı']);
+        }
+        return [$conversation,$conversationcount];
     }
 
     /**
@@ -25,7 +35,24 @@ class ConversationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+           'title'=>'required|min:1|max:100',
+           'description'=>'max:1000',
+        ]);
+        $conversation = new Conversation();
+        $conversation->title = $request->title;
+        $conversation->description = $request->description;
+        $conversation->type = $request->type;
+        if ($request->type == '1'){
+            if($request->hasFile('file')){
+                $imageName=time().rand(1,1000).'.'.$request->file->getClientOriginalExtension();
+                $request->file->move(public_path('images'),$imageName);
+                $conversation->file='images/'.$imageName;
+            }
+        }
+        $conversation->everyone_chat = $request->everyone_chat;
+        $conversation->save();
+        return response()->json(['message'=>'Sohbet Başarılı Bir Şekilde Oluşturuldu']);
     }
 
     /**
@@ -36,7 +63,16 @@ class ConversationController extends Controller
      */
     public function show($id)
     {
-        //
+        $conversation = Conversation::find($id);
+        $messages = Message::where('conversation_id',$conversation->id)->get();
+        if (!$conversation){
+            return response()->json([
+                'status' => 401,
+                'message' => 'Sohbet Bulunamadı.'
+            ]);
+        }
+        $messagescount = $messages->count();
+        return [$messages,$messagescount];
     }
 
     /**
@@ -48,7 +84,12 @@ class ConversationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $conversation = Conversation::findOrFail($id);
+        $conversation->description=$request->description;
+        $conversation->type=$request->type;
+        $conversation->everyone_chat = $request->everyone_chat;
+        $conversation->save();
+        return response()->json(['message'=>'Sohbet Başarı İle Güncellendi']);
     }
 
     /**
@@ -59,6 +100,13 @@ class ConversationController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $conversation = Conversation::destroy($id);
+        if (!$conversation){
+            return response()->json([
+                'status'=>'400',
+                'message'=>'Sohbet Bulunamadı'
+            ]);
+        }
+        return response()->json(['message'=>'Sohbet Başarılı bir şekilde silindi']);
     }
 }

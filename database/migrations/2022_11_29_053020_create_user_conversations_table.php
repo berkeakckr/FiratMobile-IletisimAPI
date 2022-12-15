@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('user_conversations', function (Blueprint $table) {
             $table->id();
-            $table->boolean('send_message');
-            $table->boolean('is_admin');
-            $table->unsignedBigInteger('conversation');
-            $table->foreign('conversation')->references('id')->on('conversations')->onDelete('cascade');
+            $table->unsignedBigInteger('conversation_id')->nullable();
+            $table->boolean('send_message')->nullable();
+            $table->enum('status',['is_akademisyen','is_ogrenci'])->nullable();
+            $table->foreign('conversation_id')->references('id')->on('conversations')->onDelete('cascade');
             $table->timestamps();
         });
     }
