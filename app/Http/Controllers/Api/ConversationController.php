@@ -89,20 +89,20 @@ class ConversationController extends Controller
         $messagescount = $messages->count();
         return [$messages,$messagescount];
     }
-    public function showw($id)
+    public function Get_Users($id)
     {
         $conversation = Conversation::find($id);
-        $users = UserConversation::where('conversation_id',$conversation->id)->firstOrFail();
+        $user_conversations = UserConversation::whereIn('conversation_id', $conversation->user_conversation()->pluck('user_id'))->get();
+        $users = User::whereIn('id',$user_conversations->pluck('id'))->get();
         if (!$conversation){
             return response()->json([
                 'status' => 401,
                 'message' => 'Sohbet Bulunamadı.'
             ]);
         }
-        $get_users=$users->get_Users;
+        //$users = User::whereIn('user_id', $user_conversations->userss)->get();;
+        return response()->json($users);
 
-        //$messagescount = $messages->count();
-        return $get_users;
     }
 
     /**

@@ -15,7 +15,12 @@ class Conversation extends Model
     public function messageCount(){
         return $this->hasMany('App\Models\Message','conversation_id','id')->count();
     }
-    public function get_Users(){
+
+    public function user_conversation(){
+        return $this->hasMany('App\Models\UserConversation');
+    }
+
+   public function get_Users(){
         return $this->hasMany('App\Models\UserConversation','conversation_id','id');
     }
 

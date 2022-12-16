@@ -9,4 +9,8 @@ class UserConversation extends Model
 {
     protected $fillable = ['conversation','is_admin','send_message'];
     use HasFactory;
+
+    public function deneme(){
+        return $this->hasMany('App\Models\User');
+    }
 }
