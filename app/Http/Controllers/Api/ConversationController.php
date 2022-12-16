@@ -92,8 +92,8 @@ class ConversationController extends Controller
     public function Get_Users($id)
     {
         $conversation = Conversation::find($id);
-        $user_conversations = UserConversation::whereIn('conversation_id', $conversation->user_conversation()->pluck('user_id'))->get();
-        $users = User::whereIn('id',$user_conversations->pluck('id'))->get();
+        $user_conversations = UserConversation::whereIn('conversation_id', $conversation->user_conversation()->pluck('conversation_id'))->get();
+        $users = User::whereIn('id',$user_conversations->pluck('user_id'))->get();
         if (!$conversation){
             return response()->json([
                 'status' => 401,
