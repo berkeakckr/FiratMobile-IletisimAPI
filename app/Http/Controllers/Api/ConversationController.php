@@ -18,17 +18,18 @@ class ConversationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        $conversation = Conversation::all();
-        if ($conversation == '[]'){
-            return response()->json(['message'=>'Sohbet Bulunamadı']);
+        //$user = Auth::user();
+        $user= User::find($id);
+        $user_conversations = UserConversation::whereIn('user_id', $user->get_userConversation()->pluck('user_id'))->get();
+        $conversations = Conversation::whereIn('id',$user_conversations->pluck('conversation_id'))->get();
+     if ($conversations == '[]'){
+            return response()->json(['message'=>'Bu Kişiye Ait Sohbet Bulunamadı.']);
         }
-        $conversationcount= Message::where('conversation_id','1')->get();
-        if ($conversationcount == '[]'){
-            return response()->json(['message'=>'Bu Kişiye Ait Sohbet Bulunamadı']);
-        }
-        return [$conversation,$conversationcount];
+      else{
+          return response()->json($conversations);
+      }
     }
 
     /**
@@ -59,13 +60,11 @@ class ConversationController extends Controller
         $conversation->everyone_chat = $request->everyone_chat;
         $conversation->save();
 
-        /*$userconversation = UserConversation::create([
+      /*  $userconversation = UserConversation::create([
             'user_id' => $user->id,
-            'conversation_id' => $conversation->id,
-            'is_admin' => $conversation->id,
-            'send_message' => $conversation->id
-            //'reached' => $data['email'],
-            // 'readed' => $data['type']
+            'conversation_id' => $conversation->id
+           // 'is_admin' => ,
+           // 'send_message' =>
         ]);*/
         return response()->json(['message'=>'Sohbet Başarılı Bir Şekilde Oluşturuldu']);
     }

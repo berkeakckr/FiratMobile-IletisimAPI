@@ -13,4 +13,7 @@ class UserConversation extends Model
     public function deneme(){
         return $this->hasMany('App\Models\User');
     }
+   /* public function deneme2(){
+        return $this->hasMany('App\Models\Conversation');
+    }*/
 }

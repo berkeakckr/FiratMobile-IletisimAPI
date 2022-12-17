@@ -41,7 +41,7 @@ Route::controller(MessageController::class)->group(function (){
     Route::delete('/message/{id}','destroy');
 });
 Route::controller(ConversationController::class)->group(function (){
-    Route::get('/conversations','index');
+    Route::get('/conversations/{id}','index');
     Route::post('/conversation','store');
     Route::get('/conversation/{id}','show');
     Route::get('/conversation/users/{id}','Get_Users');
