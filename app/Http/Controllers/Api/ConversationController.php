@@ -45,6 +45,7 @@ class ConversationController extends Controller
         $request->validate([
            'title'=>'required|min:1|max:100',
            'description'=>'max:1000',
+            'file' => 'mimes:jpeg,png,jpg|max:3072'
         ]);
         $conversation = new Conversation();
         $conversation->title = $request->title;
@@ -113,6 +114,11 @@ class ConversationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'title'=>'min:1|max:100',
+            'description'=>'max:1000',
+            'file' => 'mimes:jpeg,png,jpg|max:3072'
+        ]);
         $conversation = Conversation::findOrFail($id);
         $conversation->description=$request->description;
         $conversation->type=$request->type;
