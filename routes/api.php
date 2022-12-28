@@ -30,24 +30,24 @@ Route::middleware('auth:api')->group(function()
     {
         return \Illuminate\Support\Facades\Auth::user();
     });
-
+    Route::controller(MessageController::class)->group(function (){
+        Route::get('/messages','index');
+        Route::post('/message','store');
+        Route::get('/message/{id}','show');
+        //Route::put('/message/{id}','update');
+        Route::delete('/message/{id}','destroy');
+    });
+    Route::controller(ConversationController::class)->group(function (){
+        Route::get('/conversations/{id}','index');
+        Route::post('/conversation','store');
+        Route::get('/conversation/{id}','show');
+        Route::get('/conversation/users/{id}','Get_Users');
+        Route::put('/conversation/{id}','update');
+        Route::delete('/conversation/{id}','destroy');
+    });
 });
 
-Route::controller(MessageController::class)->group(function (){
-    Route::get('/messages','index');
-    Route::post('/message','store');
-    Route::get('/message/{id}','show');
-    //Route::put('/message/{id}','update');
-    Route::delete('/message/{id}','destroy');
-});
-Route::controller(ConversationController::class)->group(function (){
-    Route::get('/conversations/{id}','index');
-    Route::post('/conversation','store');
-    Route::get('/conversation/{id}','show');
-    Route::get('/conversation/users/{id}','Get_Users');
-    Route::put('/conversation/{id}','update');
-    Route::delete('/conversation/{id}','destroy');
-});
+
 
 //Route::get('test',[\App\Http\Controllers\TestController::class,'index']);
 //Route::post('post',[\App\Http\Controllers\TestController::class,'post']);

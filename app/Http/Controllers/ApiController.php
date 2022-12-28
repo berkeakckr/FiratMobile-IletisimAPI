@@ -39,7 +39,9 @@ public function login(Request $request)
 
         if ($valid->fails()) {
             $jsonError=response()->json($valid->errors()->all(), 400);
-            return response()->json($jsonError);
+
+            return response()->json($jsonError,[])
+                ;
             //return \Response::json($jsonError);
 
         }
@@ -65,7 +67,7 @@ public function login(Request $request)
         ]);
         $success['token']=$user->createToken("Login")->accessToken;
         return response()->json([
-            'success'=>$success
+            'success'=>$success,'message'=>$user->name.'kişisi eklendi'
         ], 200);
     }
 

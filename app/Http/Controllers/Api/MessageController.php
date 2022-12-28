@@ -37,13 +37,17 @@ class MessageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
-        $user_type =UserConversation::where('user_id',$request->user_id)->where('conversation_id',$request->conversation_id)->first()->status;
+    {
+        $user = Auth::user();
+        // $email = Auth::user()->email;
+        //$user_type =UserConversation::where('user_id',$request->user_id)->where('conversation_id',$request->conversation_id)->first()->status;
+        $user_type =$user->type;
+        //$conversation= Conversation::find($request->conversation_id)->get();
         $conversation= Conversation::where('id',$request->conversation_id)->first();
-        $user_conversation=UserConversation::where('conversation_id',$request->conversation_id->pluck('user_id'))->get();
+        $user_conversation=UserConversation::where('conversation_id',$conversation->id)->first();
         //$user = Auth::user();
-        $user= User::find($request->user_id);
-        if($user_type=='is_akademisyen')
+        //$user= User::find($request->user_id);
+        if($user_type==1)
         {
             //post metodu
             $message = new Message();
@@ -54,22 +58,22 @@ class MessageController extends Controller
                 $request->file->move(public_path('images'),$imageName);
                 $message->file='images/'.$imageName;
             }
-            $message->user_id = $request->user_id;  //$user->id
+            $message->user_id = $user->id;
             $message->conversation_id = $request->conversation_id;
             $conversation= Conversation::find($request->conversation_id);
 
             $message->save();
 
-            $notification = Notification::create([
-                'message_id' => $message->id,
-                'user_id' => $user->id,
-                //'reached' => $data['email'],
-                // 'readed' => $data['type']
-            ]);
+            /*  $notification = Notification::create([
+                  'message_id' => $message->id,
+                  'user_id' => $user->id,
+                  //'reached' => $data['email'],
+                  // 'readed' => $data['type']
+              ]);*/
 
             return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
         }
-        if($user_type=='is_ogrenci'&& $conversation->type==0 && $user_conversation->status=='is_akademisyen'
+        if($user_type==0&& $conversation->type==0 && $user_conversation->status=='is_akademisyen'
             && Auth::id()!=$user_conversation->user_id)
         {
             //post metodu
@@ -81,18 +85,18 @@ class MessageController extends Controller
                 $request->file->move(public_path('images'),$imageName);
                 $message->file='images/'.$imageName;
             }
-            $message->user_id = $request->user_id;  //$user->id
+            $message->user_id = $user->id;  //$user->id
             $message->conversation_id = $request->conversation_id;
             $conversation= Conversation::find($request->conversation_id);
 
             $message->save();
 
-            $notification = Notification::create([
-                'message_id' => $message->id,
-                'user_id' => $user->id,
-                //'reached' => $data['email'],
-                // 'readed' => $data['type']
-            ]);
+            /*  $notification = Notification::create([
+                  'message_id' => $message->id,
+                  'user_id' => $user->id,
+                  //'reached' => $data['email'],
+                  // 'readed' => $data['type']
+              ]);*/
 
             return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
         }
