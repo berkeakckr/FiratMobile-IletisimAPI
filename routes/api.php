@@ -37,7 +37,7 @@ Route::controller(MessageController::class)->group(function (){
     Route::get('/messages','index');
     Route::post('/message','store');
     Route::get('/message/{id}','show');
-    //Route::put('/message/{id}','update');
+    Route::put('/message/{id}','update');
     Route::delete('/message/{id}','destroy');
 });
 Route::controller(ConversationController::class)->group(function (){
