@@ -37,7 +37,7 @@ class MessageController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { //saaa
+    { 
         $user_type =UserConversation::where('user_id',$request->user_id)->where('conversation_id',$request->conversation_id)->first()->status;
         $conversation= Conversation::where('id',$request->conversation_id)->first();
         $user_conversation=UserConversation::where('conversation_id',$request->conversation_id->pluck('user_id'))->get();
