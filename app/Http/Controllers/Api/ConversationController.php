@@ -11,6 +11,7 @@ use App\Models\Message;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use mysql_xdevapi\Collection;
 
 class ConversationController extends Controller
@@ -37,12 +38,14 @@ class ConversationController extends Controller
 
     public function dersler()
     {
-        // $user = Auth::user();
-        // $ogrenci_no = strstr($user->email, '@', true);
-        // $dersler=OBSHelper::getCallObs($ogrenci_no);
-        $dersler=OBSHelper::getCallObs('190290021');
-        //$data = json_decode($dersler);
-        //$data->ogr_no
+         $user = Auth::user();
+         $ogrenci_no = strstr($user->email, '@', true);
+        $dersler=OBSHelper::getCallObs($ogrenci_no);
+
+
+        //$dersler=OBSHelper::getCallObs($ogrenci_no);
+       //$data = json_decode($dersler);
+
 
         if ($dersler == '[]'){
             return response()->json(['message'=>'Bu Kişiye Ait Sohbet Bulunamadı.']);
