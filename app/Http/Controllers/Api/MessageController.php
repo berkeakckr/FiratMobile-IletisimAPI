@@ -38,6 +38,9 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'file' => 'mimes:jpeg,png,jpg|max:3072'
+        ]);
       $user_type =UserConversation::where('user_id',$request->user_id)->where('conversation_id',$request->conversation_id)->first()->status;
       $conversation= Conversation::where('id',$request->conversation_id)->first();
       $user_conversation=UserConversation::where('conversation_id',$request->conversation_id->pluck('user_id'))->get();
@@ -146,21 +149,21 @@ class MessageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    //public function update(Request $request, $id)
+    //{
         //put()
-        $message = Message::findOrFail($id);
-        $message->text = $request->text;
-        if($request->hasFile('file')){
-            $imageName=time().rand(1,1000).'.'.$request->file->getClientOriginalExtension();
-            $request->file->move(public_path('images'),$imageName);
-            $message->file='images/'.$imageName;
-        }
-        $message->user_id = $request->user_id;  //$user->id
-        $message->conversation_id = $request->conversation_id;
-        $message->save();
-        return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Güncellendi']);
-    }
+      //  $message = Message::findOrFail($id);
+        //$message->text = $request->text;
+        //if($request->hasFile('file')){
+         //   $imageName=time().rand(1,1000).'.'.$request->file->getClientOriginalExtension();
+         //   $request->file->move(public_path('images'),$imageName);
+         //   $message->file='images/'.$imageName;
+        //}
+        //$message->user_id = $request->user_id;  //$user->id
+        //$message->conversation_id = $request->conversation_id;
+        //$message->save();
+       // return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Güncellendi']);
+    //}
 
     /**
      * Remove the specified resource from storage.
