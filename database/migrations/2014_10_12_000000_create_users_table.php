@@ -19,6 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('type'); //type 0 ise öğrenci ,1 ise akademisyen
+            $table->boolean('status')->default('0'); //type 0 ise aktif değil ,1 ise aktif
             $table->rememberToken();
             $table->timestamps();
         });

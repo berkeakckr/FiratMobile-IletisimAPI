@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('user_conversations', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('conversation_id')->nullable();
             $table->boolean('send_message')->nullable();
             $table->enum('status',['is_akademisyen','is_ogrenci'])->nullable();
             $table->foreign('conversation_id')->references('id')->on('conversations')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

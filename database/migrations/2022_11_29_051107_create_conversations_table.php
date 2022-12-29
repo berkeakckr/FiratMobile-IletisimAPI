@@ -17,10 +17,12 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('description')->nullable();
-            $table->boolean('type')->nullable();
+            $table->boolean('type')->nullable(); //type 0 ise grup sohbeti ,1 ise tekli sohbet
             $table->string('file')->nullable();
             $table->boolean('everyone_chat')->nullable()->default('1');
             $table->timestamps();
+
+            //$table->foreign('id')->references('conversation_id')->on('message');
         });
     }
 
