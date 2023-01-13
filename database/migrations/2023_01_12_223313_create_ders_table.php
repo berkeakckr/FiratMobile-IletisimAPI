@@ -18,6 +18,7 @@ class CreateDersTable extends Migration
             $table->unsignedBigInteger('bolum_id');
             $table->string('ders_adi');
             $table->unsignedBigInteger('akademisyen_id');
+            $table->foreign('akademisyen_id')->references('id')->on('users')->onDelete('cascade');
             $table->rememberToken();
             $table->timestamps();
         });
