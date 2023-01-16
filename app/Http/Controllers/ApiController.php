@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Controllers\Api\DatabaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -20,39 +20,9 @@ public function login(Request $request)
     $password= $request->password;
 
     $user = Auth::user();
-    $dersler = Ders::all();
-    $conversations = Conversation::all();
-    if($conversations->isEmpty())
-    {
-        foreach($dersler as $ders)
-        {
-            $conversation = Conversation::create([
-                'title' => $ders->ders_adi,
-                'description' => $ders->ders_adi.' '."Açıklaması",
-                'type' => 0,
-                'everyone_chat' => 0
-            ]);
-        }
-    }
-    else{
-        foreach($conversations as $conversation) {
-            foreach ($dersler as $ders) {
-                if($ders->ders_adi==$conversation->title)
-                {
-                   continue;
-                }
-                else{
-                    $conversation = Conversation::create([
-                        'title' => $ders->ders_adi,
-                        'description' => $ders->ders_adi . ' ' . "Açıklaması",
-                        'type' => 0,
-                        'everyone_chat' => 0
-                    ]);
-                }
-            }
-        }
-    }
-//conversation tablosuna bak,eğer o ders yoksa conversationa ekle.
+
+    DatabaseController::check();
+
     if(Auth::attempt(['email'=>$email,'password'=>$password]))
     {
 
