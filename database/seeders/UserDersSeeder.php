@@ -14,7 +14,7 @@ class UserDersSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('user_ders')->truncate();
+        //DB::table('user_ders')->truncate();
         DB::table('user_ders')->insert([
             [
                 'user_id' => 1,

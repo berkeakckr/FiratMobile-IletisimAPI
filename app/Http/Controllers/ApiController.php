@@ -19,15 +19,14 @@ public function login(Request $request)
     $email = $request->email;
     $password= $request->password;
 
-    $user = Auth::user();
-
-    DatabaseController::check();
 
     if(Auth::attempt(['email'=>$email,'password'=>$password]))
     {
-
+        $user = Auth::user();
         $success['token']=$user->createToken("Login")->accessToken;
+        DatabaseController::check();
         return response()->json([
+
             'success'=>$success
         ], 200);
     }

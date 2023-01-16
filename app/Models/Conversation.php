@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Conversation extends Model
 {
-    protected $fillable = ['title','description','type','everyone_chat'];
+    protected $fillable = ['title','description','type','everyone_chat','ders_id'];
     use HasFactory;
     public function messages(){
         return $this->hasMany('App\Models\Message');

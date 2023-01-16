@@ -24,13 +24,14 @@ class DatabaseController extends Controller
                     'everyone_chat' => 0,
                     'ders_id' => $ders->id
                 ]);
+                //dd($ders->id);
             }
         }
         $user_dersler = UserDers::where('user_id',Auth::id())->get();
         foreach ($user_dersler as $user_ders ){
-            if(!UserConversation::where('user_id',Auth::id())->where('conversation_id',Conversation::where('ders_id',$user_ders->id))->first()){
+            if(!UserConversation::where('user_id',Auth::id())->where('conversation_id',Conversation::where('ders_id',$user_ders->id)->first()->id)->first()){
                 $user_conversation = UserConversation::create([
-                    'user_id' => $user_ders->user_id,
+                    'user_id' => Auth::id(),
                     'conversation_id' => $user_ders->id,
                     'send_message' => 0,
                     'status' => 0

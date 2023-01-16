@@ -14,8 +14,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('bolum')->truncate();
-        DB::table('ders')->truncate();
+        //DB::table('bolum')->truncate();
+        //DB::table('ders')->truncate();
         DB::table('bolum')->insert([
             [
                 'bolum_adi' => "Yazılım Mühendisliği",
