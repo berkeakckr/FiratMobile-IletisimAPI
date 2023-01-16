@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Laravel\Passport\Client;
+use App\Models\UserConversation;
+use App\Models\UserDers;
+use App\Models\Conversation;
+use App\Models\Ders;
 
 class ApiController extends Controller
 {
@@ -15,9 +19,43 @@ public function login(Request $request)
     $email = $request->email;
     $password= $request->password;
 
+    $user = Auth::user();
+    $dersler = Ders::all();
+    $conversations = Conversation::all();
+    if($conversations->isEmpty())
+    {
+        foreach($dersler as $ders)
+        {
+            $conversation = Conversation::create([
+                'title' => $ders->ders_adi,
+                'description' => $ders->ders_adi.' '."Açıklaması",
+                'type' => 0,
+                'everyone_chat' => 0
+            ]);
+        }
+    }
+    else{
+        foreach($conversations as $conversation) {
+            foreach ($dersler as $ders) {
+                if($ders->ders_adi==$conversation->title)
+                {
+                   continue;
+                }
+                else{
+                    $conversation = Conversation::create([
+                        'title' => $ders->ders_adi,
+                        'description' => $ders->ders_adi . ' ' . "Açıklaması",
+                        'type' => 0,
+                        'everyone_chat' => 0
+                    ]);
+                }
+            }
+        }
+    }
+//conversation tablosuna bak,eğer o ders yoksa conversationa ekle.
     if(Auth::attempt(['email'=>$email,'password'=>$password]))
     {
-        $user = Auth::user();
+
         $success['token']=$user->createToken("Login")->accessToken;
         return response()->json([
             'success'=>$success
@@ -66,6 +104,7 @@ public function login(Request $request)
             'scope'         => null,
         ]);
         $success['token']=$user->createToken("Login")->accessToken;
+
         return response()->json([
             'success'=>$success,'message'=>$user->name.'kişisi eklendi'
         ], 200);
