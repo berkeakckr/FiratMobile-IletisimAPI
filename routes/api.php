@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,10 @@ Route::middleware('auth:api')->group(function()
     Route::get('/user',function()
     {
         return \Illuminate\Support\Facades\Auth::user();
+    });
+    Route::controller(UserController::class)->group(function (){
+        Route::get('/user','index');
+        Route::get('/user/{conversation_id}','message');
     });
     Route::controller(MessageController::class)->group(function (){
         Route::get('/messages','index');

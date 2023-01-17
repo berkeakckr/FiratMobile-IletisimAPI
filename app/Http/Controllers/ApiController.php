@@ -37,10 +37,16 @@ public function login(Request $request)
 
   public function create(Request $request)
     {
+        $isExist=User::whereEmail($request->email)->first();
+        if($isExist){
+            return response()->json([
+                'message'=>'Mail başkası tarafından kullanılmakta'
+            ]);
+        }
         $valid = validator($request->only('email', 'name', 'password','type'), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:5',
+            'password' => 'required|string|min:6|max:16',
             'type' => 'required|boolean',
         ]);
 
@@ -75,7 +81,7 @@ public function login(Request $request)
         $success['token']=$user->createToken("Login")->accessToken;
 
         return response()->json([
-            'success'=>$success,'message'=>$user->name.'kişisi eklendi'
+            'success'=>$success,'message'=>$user->name.' kişisi eklendi'
         ], 200);
     }
 
