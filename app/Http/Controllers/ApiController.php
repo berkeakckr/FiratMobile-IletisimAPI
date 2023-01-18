@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Http\Controllers\Api\DatabaseController;
+use App\Models\Bolum;
+use App\Models\UserBolum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -23,8 +25,14 @@ public function login(Request $request)
         $user = Auth::user();
         $success['token']=$user->createToken("Login")->accessToken;//değişkenleri eşleşen kullanıcıya token oluşturulur.
         DatabaseController::check();
+        $user_bolum=UserBolum::where('user_id',$user->id)->get()->pluck('bolum_id');
+        $bolum_adi=Bolum::where('id',$user_bolum)->get()->pluck('bolum_adi');
         return response()->json([
-            'success'=>$success
+            'success'=>$success,
+            'type'=>$user->type,
+            'id'=>$user->id,
+            'name'=>$user->name,
+            'bolum'=>$bolum_adi,
         ], 200);
     }
     return response()->json([
