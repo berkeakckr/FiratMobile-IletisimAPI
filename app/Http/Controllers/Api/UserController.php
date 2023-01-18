@@ -48,5 +48,48 @@ class UserController extends Controller
             'message' => $messages
         ]);
     }
+    public static function checkUsertoUserChat($user_id){
+        $user = Auth::user();
+        $receiver= User::find($user_id);
+
+        $logined_user_conv_id=UserConversation::where('user_id', $user->id)->get()->pluck('conversation_id')->toArray(); //userid 1  conversation id 3,5,6 conv id 6 olan tekli sohbet onu almamız lazım
+        $receiver_user_conv_id=UserConversation::where('user_id', $user_id)->get()->pluck('conversation_id')->toArray(); //userid 2  conversation id 1,5,6
+
+        $same_ids= array_intersect($logined_user_conv_id,$receiver_user_conv_id);
+
+        $logined_user=Conversation::where('id',[$same_ids])->where('ders_id',null)->first();
+        if($user->type==0 && $receiver->type==0)
+        {
+            return response()->json([
+                'message' => 'Öğrenci Öğrenciye Mesaj Atamaz.'
+            ]);
+        }
+        if($logined_user==null)
+        {
+            $conversation = Conversation::create([
+                'title' => $user->name . ' ve ' . $receiver->name,
+                'description' => $user->name . ' ve ' . $receiver->name.''." Sohbeti",
+                'type' => 1,
+                'everyone_chat' => 0,
+            ]);
+            $user_conversation_1=UserConversation::create([
+                'user_id' => $user->id,
+                'conversation_id' => $conversation->id,
+                'send_message' => 0,
+            ]);
+            $user_conversation_2=UserConversation::create([
+                'user_id' => $receiver->id,
+                'conversation_id' => $conversation->id,
+                'send_message' => 0,
+            ]);
+        }
+        else{
+            return response()->json([
+                'message' => 'Böyle bir sohbet mevcut'
+            ]);
+        }
+        return response()->json($logined_user);
+
+    }
 
 }

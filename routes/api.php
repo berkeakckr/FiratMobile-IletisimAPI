@@ -33,6 +33,7 @@ Route::middleware('auth:api')->group(function()
     Route::controller(UserController::class)->group(function (){
         Route::get('/user','index');
         Route::get('/user/{conversation_id}','message');
+        Route::get('/user/send/{user_id}','checkUsertoUserChat');
     });
     Route::controller(MessageController::class)->group(function (){
         Route::get('/messages','index');
