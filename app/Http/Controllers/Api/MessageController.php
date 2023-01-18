@@ -46,7 +46,6 @@ class MessageController extends Controller
         {
             //post metodu
             $message = new Message();
-            $conversation = new Conversation();
             $message->text = $request->text;
             if($request->hasFile('file')){
                 $imageName=time().rand(1,1000).'.'.$request->file->getClientOriginalExtension();
