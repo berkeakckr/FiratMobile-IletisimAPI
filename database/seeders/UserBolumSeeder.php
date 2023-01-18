@@ -14,7 +14,7 @@ class UserBolumSeeder extends Seeder
      */
     public function run()
     {
-       // DB::table('user_bolum')->truncate();
+        //DB::table('user_bolum')->truncate();
         DB::table('user_bolum')->insert([
             [
                 'user_id' => 1,
