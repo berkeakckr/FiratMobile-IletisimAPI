@@ -25,14 +25,15 @@ class UserController extends Controller
                 'message' => $user->name.' Kişisine Ait Mesaj Bulunamadı.'
             ]);
         }
-        //$ders = Ders::where('akademisyen_id',$user->id)->orderBy('created_at','desc')->get();//giriş yapan kişinin dersleri son eklenen en başta olarak görüntülenir
-        $user_conversations = UserConversation::whereIn('user_id', $user->get_userConversation()->pluck('user_id'))->get();//Akademisyen Tarafından alınan derslerin aktif gruplarını yayınlar
-        $conversations = Conversation::whereIn('id',$user_conversations->pluck('conversation_id'))->get();
+        $user_conversations = UserConversation::where('user_id', $user->id)->get()->pluck('conversation_id');//Akademisyen Tarafından alınan derslerin aktif gruplarını yayınlar
+       //Akademisyen Tarafından alınan derslerin aktif gruplarını yayınlar
+        $conversations = Conversation::whereIn('id',$user_conversations)->get();
         $messagecount = $messages->count();
         return response()->json([
             'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
-            //'ders' => $ders,
+
             'conversations' => $conversations,
+            'send_messages'=>$user_conversations_send_message,
             'messagecount' => $messagecount.' Mesaj Bulunmakta.',
             'message' => $messages
 
@@ -64,13 +65,17 @@ class UserController extends Controller
 
     public function message($conversation_id){
         $user = Auth::user();
-        $conversations = Conversation::find($conversation_id); //Link ile giriş Yapılan sayfayı id değerine göre bul
-        $messages = Message::where('user_id',$user->id)->where('conversation_id',$conversations->id)->orderBy('created_at','desc')->get();//Conversation idsine ait mesajları görüntüle
+        //$user_conversation_send_message = UserConversation::where('user_id', $user->id)->get()->pluck('send_message');
+        $user_conversation = UserConversation::where('user_id', $user->id)->where('conversation_id',$conversation_id)->first();
+        $conversation = Conversation::find($conversation_id); //Link ile giriş Yapılan sayfayı id değerine göre bul
+        //$messages = Message::where('user_id',$user->id)->where('conversation_id',$conversation->id)->orderBy('created_at','desc')->get();//Conversation idsine ait mesajları görüntüle
+        $messages = Message::where('conversation_id',$conversation->id)->orderBy('created_at','desc')->get();//Conversation idsine ait mesajları görüntüle
 
         return response()->json([
             'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
-            'userconversation' => $conversations->title.' Mesaj Kutusundasınız',
-            'message' => $messages
+            'conversation' => $conversation->title.' Mesaj Kutusundasınız',
+            'send_message'=>$user_conversation->send_message,
+            'messages' => $messages
         ]);
     }
 
@@ -81,9 +86,8 @@ class UserController extends Controller
         $user_type =$user->type;
         $conversation= Conversation::find($id);
         $logined_user_conversation=UserConversation::where('conversation_id',$conversation->id)->where('user_id',$user->id)->first();
-        if($user_type==1 &&$logined_user_conversation->send_message==0)// eğer type 1 yani akademisyense ve  giriş yapan kişinin
+        if($user_type==1||$user_type==1&&$logined_user_conversation->send_message==0)// eğer giriş yapan kişi  akademisyen veya öğrenciyse
             // bu grupta msj atma yetkisi varsa mesaj at
-
         {
             //post metodu
             $message = new Message();
@@ -105,41 +109,11 @@ class UserController extends Controller
             return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
         }
 
-        if($user_type==0&&$logined_user_conversation->send_message==0)
-        //eğer mesaj atan öğrenciyse ve mesaj atılan yer ders grubuysa ve giriş yapan kişinin bu grupta msj atma yetkisi varsa
-            //mesaj at
-        {
-            //post metodu
-            $message = new Message();
-            $conversation = new Conversation();
-            $message->text = $request->text;
-            if($request->hasFile('file')){
-                $imageName=time().rand(1,1000).'.'.$request->file->getClientOriginalExtension();
-                $request->file->move(public_path('images'),$imageName);
-                $message->file='images/'.$imageName;
-            }
-            $message->user_id = $user->id;  //$user->id
-            $message->conversation_id = $request->conversation_id;
-            $conversation= Conversation::find($request->conversation_id);
-
-            $message->save();
-
-            /*  $notification = Notification::create([
-                  'message_id' => $message->id,
-                  'user_id' => $user->id,
-                  //'reached' => $data['email'],
-                  // 'readed' => $data['type']
-              ]);*/
-
-            return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
-        }
         else{
             return response()->json([
-                'error'=>'Bir öğrenci başka bir öğrenciye mesaj atamaz.'
+                'error'=>'Mesaj Gönderilme Durumu Kapalı.'
             ],401);
         }
-
-
 
 
         // $conversation->id = $request->conversation_id;

@@ -30,6 +30,11 @@ class DatabaseController extends Controller
         $user_dersler = UserDers::where('user_id',Auth::id())->get();
         foreach ($user_dersler as $user_ders ){
             if(!UserConversation::where('user_id',Auth::id())->where('conversation_id',Conversation::where('ders_id',$user_ders->id)->first()->id)->first()){
+                //Öğrenci eğer dersinin conversationuna dahil edilmediyse onu dahil et
+                //önce conversationun firstini alıyoruz(örn:dağıtık dersinin bir kaydı var ve onu alıyoruz
+                //sonra giriş yapan kişinin user conversationlarındaki o conversationun firstini alıyoruz(zaten bir grupta birden fazla
+                //bulunamayız,sonra en başa ! koyuyoruz ve eğer böyle bir kayıt yoksa demiş oluyoruz.Daha sonra o user conversationu
+                //oluşturuyoruz.
                 $user_conversation = UserConversation::create([
                     'user_id' => Auth::id(),
                     'conversation_id' => $user_ders->id,
