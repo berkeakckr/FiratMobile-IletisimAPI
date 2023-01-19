@@ -9,6 +9,7 @@ use App\Models\Ders;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\UserConversation;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -79,8 +80,10 @@ class UserController extends Controller
         $user = Auth::user();
         $user_type =$user->type;
         $conversation= Conversation::find($id);
-        $user_conversation=UserConversation::where('conversation_id',$conversation->id)->first();
-        if($user_type==0)
+        $logined_user_conversation=UserConversation::where('conversation_id',$conversation->id)->where('user_id',$user->id)->first();
+        if($user_type==1 &&$logined_user_conversation->send_message==0)// eğer type 1 yani akademisyense ve  giriş yapan kişinin
+            // bu grupta msj atma yetkisi varsa mesaj at
+
         {
             //post metodu
             $message = new Message();
@@ -102,8 +105,9 @@ class UserController extends Controller
             return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
         }
 
-        if($user_type==0&& $conversation->type==0 && $user_conversation->status=='is_akademisyen'
-            && Auth::id()!=$user_conversation->user_id)
+        if($user_type==0&&$logined_user_conversation->send_message==0)
+        //eğer mesaj atan öğrenciyse ve mesaj atılan yer ders grubuysa ve giriş yapan kişinin bu grupta msj atma yetkisi varsa
+            //mesaj at
         {
             //post metodu
             $message = new Message();
@@ -130,7 +134,6 @@ class UserController extends Controller
             return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
         }
         else{
-
             return response()->json([
                 'error'=>'Bir öğrenci başka bir öğrenciye mesaj atamaz.'
             ],401);
