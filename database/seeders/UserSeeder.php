@@ -66,8 +66,15 @@ class UserSeeder extends Seeder
                 'type'=>0,
                 'remember_token'=>Str::random(10),
             ],
+            [
+                'name'=>'Sinem Akyol',
+                'email'=>'sinemakyol@gmail.com',
+                'password'=>bcrypt('sinem123'),
+                'type'=>1,
+                'remember_token'=>Str::random(10),
+            ],
 
         ]);
-        
+
     }
 }

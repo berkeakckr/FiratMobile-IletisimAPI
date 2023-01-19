@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-Route::post('register',[\App\Http\Controllers\ApiController::class,'create']); //Kullanıcı Oluşturma
+//Route::post('register',[\App\Http\Controllers\ApiController::class,'create']); //Kullanıcı Oluşturma
 Route::post('login',[\App\Http\Controllers\ApiController::class,'login']);  //Kullanıcı girişi
 Route::middleware('auth:api')->group(function()
 {

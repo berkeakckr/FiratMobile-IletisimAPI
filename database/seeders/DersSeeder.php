@@ -19,37 +19,42 @@ class DersSeeder extends Seeder
             [
                 'bolum_id' => 1,
                 'ders_adi' => "Dağıtık Yazılım Mühendisliği",
-                'akademisyen_id' => 1,
+                'akademisyen_id' => 2,
             ],
             [
                 'bolum_id' => 1,
                 'ders_adi' => "Veri İletişimi Ve Bilgisayar Ağları",
-                'akademisyen_id' => 1,
+                'akademisyen_id' => 2,
             ],
             [
                 'bolum_id' => 1,
                 'ders_adi' => "Uygulamalı Sinir Ağları",
-                'akademisyen_id' => 2,
+                'akademisyen_id' => 4,
             ],
             [
                 'bolum_id' => 2,
                 'ders_adi' => "Algoritma ve Programlama",
-                'akademisyen_id' => 3,
+                'akademisyen_id' => 4,
             ],
             [
                 'bolum_id' => 2,
                 'ders_adi' => "Otomata",
-                'akademisyen_id' => 3,
+                'akademisyen_id' => 6,
             ],
             [
                 'bolum_id' => 3,
-                'ders_adi' => "Veri Yapıları",
-                'akademisyen_id' => 4,
+                'ders_adi' => "Elektrik Makineleri",
+                'akademisyen_id' => 6,
             ],
             [
                 'bolum_id' => 3,
-                'ders_adi' => "BBT",
-                'akademisyen_id' => 4,
+                'ders_adi' => "Elektrik Devreleri",
+                'akademisyen_id' => 8,
+            ],
+            [
+                'bolum_id' => 4,
+                'ders_adi' => "Makine Mühendisliğine Giriş",
+                'akademisyen_id' => 8,
             ],
 
         ]);
