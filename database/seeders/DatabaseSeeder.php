@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,6 +14,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        //php artisan migrate:fresh
+        //php artisan passport:install
+        //php artisan db:seed --class=DatabaseSeeder
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('users')->truncate();
+        DB::table('bolum')->truncate();
+        DB::table('ders')->truncate();
+        DB::table('user_bolum')->truncate();
+        DB::table('user_ders')->truncate();
+
+
+        $this->call([
+            UserSeeder::class,
+            BolumSeeder::class,
+            DersSeeder::class,
+            UserBolumSeeder::class,
+            UserDersSeeder::class,
+        ]);
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
     }
 }

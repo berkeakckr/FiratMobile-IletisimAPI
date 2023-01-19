@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserConversation extends Model
 {
-    protected $fillable = ['conversation','is_admin','send_message'];
+    protected $fillable = ['conversation_id','is_admin','send_message','user_id'];
     use HasFactory;
 
     public function deneme(){

@@ -39,19 +39,13 @@ class MessageController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        // $email = Auth::user()->email;
-        //$user_type =UserConversation::where('user_id',$request->user_id)->where('conversation_id',$request->conversation_id)->first()->status;
         $user_type =$user->type;
-        //$conversation= Conversation::find($request->conversation_id)->get();
         $conversation= Conversation::where('id',$request->conversation_id)->first();
         $user_conversation=UserConversation::where('conversation_id',$conversation->id)->first();
-        //$user = Auth::user();
-        //$user= User::find($request->user_id);
-        if($user_type==1)
+        if($user_type==0)
         {
             //post metodu
             $message = new Message();
-            $conversation = new Conversation();
             $message->text = $request->text;
             if($request->hasFile('file')){
                 $imageName=time().rand(1,1000).'.'.$request->file->getClientOriginalExtension();

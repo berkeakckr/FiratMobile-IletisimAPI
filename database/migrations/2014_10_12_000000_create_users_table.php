@@ -21,6 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->boolean('type'); //type 0 ise öğrenci ,1 ise akademisyen
             $table->boolean('status')->default('0'); //type 0 ise aktif değil ,1 ise aktif
+            $table->string('device_mac_adress')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('type')->nullable(); //type 0 ise grup sohbeti ,1 ise tekli sohbet
             $table->string('file')->nullable();
             $table->boolean('everyone_chat')->nullable()->default('1');
+            $table->unsignedBigInteger('ders_id')->nullable();
             $table->timestamps();
 
             //$table->foreign('id')->references('conversation_id')->on('message');

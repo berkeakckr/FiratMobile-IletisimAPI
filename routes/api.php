@@ -2,49 +2,20 @@
 
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-Route::post('register',[\App\Http\Controllers\ApiController::class,'create']);
-Route::post('login',[\App\Http\Controllers\ApiController::class,'login']);
-
-
+//Route::post('register',[\App\Http\Controllers\ApiController::class,'create']); //Kullanıcı Oluşturma
+Route::post('login',[\App\Http\Controllers\ApiController::class,'login']);  //Kullanıcı girişi
 Route::middleware('auth:api')->group(function()
 {
-    Route::get('/user',function()
-    {
-        return \Illuminate\Support\Facades\Auth::user();
+    Route::controller(UserController::class)->group(function (){
+        Route::get('/user','index');//Anasayfa
+        Route::get('/user/message/{conversation_id}','message');//Grup İçerisindeki Mesajlar sayfası
+        Route::post('/user/message/{conversation_id}','messageCreate');//Grup İçerisinde mesaj oluşturmak için
+        Route::delete('/user/message/{conversation_id}/{id}','messageDelete');//Grup içerisindeki Mesajı Silmek için
+        Route::get('/user/check/{user_id}','checkUsertoUserChat');//Kişiden kişiye mesaj kontrolü için gerekli conversation ve
+                                                                            //user_conversation tablolarını oluşturmak için
     });
-    Route::controller(MessageController::class)->group(function (){
-        Route::get('/messages','index');
-        Route::post('/message','store');
-        Route::get('/message/{id}','show');
-        Route::put('/message/{id}','update');
-        Route::delete('/message/{id}','destroy');
-    });
-    Route::controller(ConversationController::class)->group(function (){
-        Route::get('/conversations1','index');
-        Route::get('/conversations','dersler');
-        Route::post('/conversation','store');
-        Route::get('/conversation/{id}','show');
-        Route::get('/conversation/users/{id}','Get_Users');
-        Route::put('/conversation/{id}','update');
-        Route::delete('/conversation/{id}','destroy');
-    });
-
 });
 
