@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
+use App\Models\UserBolum;
 use App\Models\Ders;
 use App\Models\Message;
 use App\Models\User;
@@ -23,16 +24,39 @@ class UserController extends Controller
                 'message' => $user->name.' Kişisine Ait Mesaj Bulunamadı.'
             ]);
         }
-        $ders = Ders::where('akademisyen_id',$user->id)->orderBy('created_at','desc')->get();//giriş yapan kişinin dersleri son eklenen en başta olarak görüntülenir
+        //$ders = Ders::where('akademisyen_id',$user->id)->orderBy('created_at','desc')->get();//giriş yapan kişinin dersleri son eklenen en başta olarak görüntülenir
         $user_conversations = UserConversation::whereIn('user_id', $user->get_userConversation()->pluck('user_id'))->get();//Akademisyen Tarafından alınan derslerin aktif gruplarını yayınlar
         $conversations = Conversation::whereIn('id',$user_conversations->pluck('conversation_id'))->get();
         $messagecount = $messages->count();
         return response()->json([
             'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
-            'ders' => $ders,
-            'userconversation' => $conversations,
+            //'ders' => $ders,
+            'conversations' => $conversations,
             'messagecount' => $messagecount.' Mesaj Bulunmakta.',
             'message' => $messages
+
+        ]);
+    }
+
+    public function academicsList(){
+        $user = Auth::user();
+        $user_bolum_id = UserBolum::where('user_id',$user->id)->get()->pluck('bolum_id');
+        //dd($user_bolum_id);
+        $user_ids=UserBolum::where('bolum_id',$user_bolum_id)->get()->pluck('user_id');
+        //dd($user_ids);
+        $academics=User::whereIn('id',$user_ids)->where('type',1)->get();
+       // dd($academics);
+        //$conversation
+        if (!$academics){
+            return response()->json([
+                'status' => 401,
+                'message' => $user->name.' Kişisinin Bölümüne Ait Akademisyen Bulunamadı.'
+            ]);
+        }
+        return response()->json([
+            'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
+            'akademisyen_ismi' => $academics->name,
+            'akademisyen_mail' => $academics->mail,
 
         ]);
     }
@@ -154,14 +178,14 @@ class UserController extends Controller
 
         $same_ids= array_intersect($logined_user_conv_id,$receiver_user_conv_id);
 
-        $logined_user=Conversation::where('id',[$same_ids])->where('ders_id',null)->first();
+        $single_chat=Conversation::where('id',[$same_ids])->where('ders_id',null)->first();
         if($user->type==0 && $receiver->type==0)
         {
             return response()->json([
                 'message' => 'Öğrenci Öğrenciye Mesaj Atamaz.'
             ]);
         }
-        if($logined_user==null)
+        if($single_chat==null)
         {
             $conversation = Conversation::create([
                 'title' => $user->name . ' ve ' . $receiver->name,
@@ -185,7 +209,7 @@ class UserController extends Controller
                 'message' => 'Böyle bir sohbet mevcut'
             ]);
         }
-        return response()->json($logined_user);
+        return response()->json($single_chat);
 
     }
 
