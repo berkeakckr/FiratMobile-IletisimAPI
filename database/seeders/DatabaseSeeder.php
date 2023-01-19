@@ -14,17 +14,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        //php artisan migrate:fresh
+        //php artisan passport:install
         //php artisan db:seed --class=DatabaseSeeder
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('users')->truncate();
         DB::table('bolum')->truncate();
         DB::table('ders')->truncate();
-
         DB::table('user_bolum')->truncate();
         DB::table('user_ders')->truncate();
 
 
         $this->call([
+            UserSeeder::class,
             BolumSeeder::class,
             DersSeeder::class,
             UserBolumSeeder::class,
