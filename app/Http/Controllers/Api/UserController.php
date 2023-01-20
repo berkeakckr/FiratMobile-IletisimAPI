@@ -157,29 +157,48 @@ class UserController extends Controller
         $same_ids= array_intersect($logined_user_conv_id,$receiver_user_conv_id);
 
         $single_chat=Conversation::where('id',[$same_ids])->where('ders_id',null)->first();
+
         if($user->type==0 && $receiver->type==0)
         {
             return response()->json([
                 'message' => 'Öğrenci Öğrenciye Mesaj Atamaz.'
             ]);
         }
-        if($single_chat==null)
-        {
+        if($single_chat==null) {
             $conversation = Conversation::create([
                 'title' => $user->name . ' ve ' . $receiver->name,
-                'description' => $user->name . ' ve ' . $receiver->name.''." Sohbeti",
+                'description' => $user->name . ' ve ' . $receiver->name . '' . " Sohbeti",
                 'type' => 1,
                 'everyone_chat' => 0,
             ]);
-            $user_conversation_1=UserConversation::create([
+            $user_conversation_1 = UserConversation::create([
                 'user_id' => $user->id,
                 'conversation_id' => $conversation->id,
                 'send_message' => 0,
             ]);
-            $user_conversation_2=UserConversation::create([
+            $user_conversation_2 = UserConversation::create([
                 'user_id' => $receiver->id,
                 'conversation_id' => $conversation->id,
                 'send_message' => 0,
+            ]);
+            $messages = Message::where('conversation_id',$conversation->id)->orderBy('created_at','desc')->get();
+
+            return response()->json([
+                'user' => $user->name . '(' . $user->email . ')' . ' Kişisine Ait Hesaptasınız.',
+                'conversation' => $conversation->title . ' Mesaj Kutusundasınız',
+                'send_message' => $user_conversation_1->send_message,
+                'messages' => $messages
+            ]);
+        }
+        else{
+            $user_conversation=UserConversation::where('user_id',$user->id)->where('conversation_id',$single_chat->id)->first();
+            $messages = Message::where('conversation_id',$single_chat->id)->orderBy('created_at','desc')->get();
+
+            return response()->json([
+                'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
+                'conversation' => $single_chat->title.' Mesaj Kutusundasınız',
+                'send_message'=>$user_conversation->send_message,
+                'messages' => $messages
             ]);
         }
       /*  else{
@@ -187,7 +206,7 @@ class UserController extends Controller
                 'message' => 'Böyle bir sohbet mevcut'
             ]);
         }*/
-        return response()->json($single_chat);
+
 
     }
 
