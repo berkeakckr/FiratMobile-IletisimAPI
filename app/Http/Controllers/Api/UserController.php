@@ -33,7 +33,6 @@ class UserController extends Controller
             'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
 
             'conversations' => $conversations,
-            'send_messages'=>$user_conversations_send_message,
             'messagecount' => $messagecount.' Mesaj Bulunmakta.',
             'message' => $messages
 
@@ -47,6 +46,9 @@ class UserController extends Controller
         $user_ids=UserBolum::where('bolum_id',$user_bolum_id)->get()->pluck('user_id');
         //dd($user_ids);
         $academics=User::whereIn('id',$user_ids)->where('type',1)->get();
+        //dd($academics);
+        //$parse=json_decode($academics);
+        //dd($parse);
        // dd($academics);
         //$conversation
         if (!$academics){
@@ -57,8 +59,7 @@ class UserController extends Controller
         }
         return response()->json([
             'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
-            'akademisyen_ismi' => $academics->name,
-            'akademisyen_mail' => $academics->mail,
+            'akademisyenler' => $academics,
 
         ]);
     }
@@ -86,7 +87,7 @@ class UserController extends Controller
         $user_type =$user->type;
         $conversation= Conversation::find($id);
         $logined_user_conversation=UserConversation::where('conversation_id',$conversation->id)->where('user_id',$user->id)->first();
-        if($user_type==1||$user_type==1&&$logined_user_conversation->send_message==0)// eğer giriş yapan kişi  akademisyen veya öğrenciyse
+        if($user_type==1||$user_type==0&&$logined_user_conversation->send_message==0)// eğer giriş yapan kişi  akademisyen veya öğrenciyse
             // bu grupta msj atma yetkisi varsa mesaj at
         {
             //post metodu
@@ -98,7 +99,7 @@ class UserController extends Controller
                 $message->file='images/'.$imageName;
             }
             $message->user_id = $user->id;
-            $message->conversation_id = $conversation->id;
+            $message->conversation_id = $id;
             $message->save();
             /*  $notification = Notification::create([
                   'message_id' => $message->id,
@@ -146,7 +147,7 @@ class UserController extends Controller
     }
 
 
-    public static function checkUsertoUserChat($user_id){
+    public function checkUsertoUserChat($user_id){
         $user = Auth::user();
         $receiver= User::find($user_id);
 
@@ -181,11 +182,11 @@ class UserController extends Controller
                 'send_message' => 0,
             ]);
         }
-        else{
+      /*  else{
             return response()->json([
                 'message' => 'Böyle bir sohbet mevcut'
             ]);
-        }
+        }*/
         return response()->json($single_chat);
 
     }
