@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
+use App\Models\Notification;
 use App\Models\UserBolum;
 use App\Models\Ders;
 use App\Models\Message;
@@ -101,12 +102,17 @@ class UserController extends Controller
             $message->user_id = $user->id;
             $message->conversation_id = $id;
             $message->save();
-            /*  $notification = Notification::create([
-                  'message_id' => $message->id,
-                  'user_id' => $user->id,
-                  //'reached' => $data['email'],
-                  // 'readed' => $data['type']
-              ]);*/
+            $users_to_message=UserConversation::where('conversation_id',$id)->where('user_id','!=',Auth::id())->get()->pluck('user_id');
+            //dd($users_to_message->first());
+            foreach($users_to_message as $users)
+            {
+                $notification =new Notification();
+                $notification->message_id =$message->id;
+                $notification->user_id =$users;
+
+                $notification->save();
+            }
+
             return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
         }
 
