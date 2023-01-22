@@ -21,6 +21,8 @@ Route::middleware('auth:api')->group(function()
         Route::get('/user/singlechat/{user_id}','checkUsertoUserChat');//Kişiden kişiye mesaj kontrolü için gerekli conversation ve
                                                                             //user_conversation tablolarını oluşturmak için
         Route::post('/user/update_send_message/{user_conversation_id}','updateSendMessage');
+        //Route::get('/user/deneme/{ders_id}','deneme');
     });
 });
+
 

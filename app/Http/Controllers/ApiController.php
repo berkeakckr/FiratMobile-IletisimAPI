@@ -23,16 +23,16 @@ public function login(Request $request)
     //Şifre ve Mail kontrol aşaması
     if(Auth::attempt(['email'=>$email,'password'=>$password]))
     {
-        $user = Auth::user();
-        $success['token']=$user->createToken("Login")->accessToken;//değişkenleri eşleşen kullanıcıya token oluşturulur.
+        //$user = Auth::user();
+        $success['token']=Auth::user()->createToken("Login")->accessToken;//değişkenleri eşleşen kullanıcıya token oluşturulur.
         DatabaseController::check();
-        $user_bolum=UserBolum::where('user_id',$user->id)->get()->pluck('bolum_id');
+        $user_bolum=UserBolum::where('user_id',Auth::id())->get()->pluck('bolum_id');
         $bolum_adi=Bolum::where('id',$user_bolum)->get()->pluck('bolum_adi');
         return response()->json([
             'success'=>$success,
-            'type'=>$user->type,
-            'id'=>$user->id,
-            'name'=>$user->name,
+            'type'=>Auth::user()->type,
+            'id'=>Auth::id(),
+            'name'=>Auth::user()->name,
             'bolum'=>$bolum_adi,
         ], 200);
     }

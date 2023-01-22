@@ -40,6 +40,14 @@ class UserBolumSeeder extends Seeder
                 'user_id' => 7,
                 'bolum_id' => 1,
             ],
+            [
+                'user_id' => 5,
+                'bolum_id' => 2,
+            ],
+            [
+                'user_id' => 8,
+                'bolum_id' => 3,
+            ],
         ]);
     }
 }

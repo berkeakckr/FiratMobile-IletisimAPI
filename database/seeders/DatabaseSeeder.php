@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Http\Controllers\Api\DatabaseController;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -34,6 +35,7 @@ class DatabaseSeeder extends Seeder
             UserDersSeeder::class,
         ]);
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DatabaseController::dersleriEkle();
 
     }
 }
