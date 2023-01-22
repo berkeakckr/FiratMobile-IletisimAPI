@@ -10,6 +10,8 @@ use App\Models\Ders;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\UserConversation;
+use App\Models\UserDers;
+use Database\Seeders\UserDersSeeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +40,11 @@ class UserController extends Controller
             'message' => $messages
 
         ]);
+    }
+    public function deneme($ders_id)
+    {
+        $user_dersler=UserDers::where('ders_id',$ders_id)->first();
+        return response()->json($user_dersler);
     }
 
     public function academicsList(){
