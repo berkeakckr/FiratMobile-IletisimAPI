@@ -12,8 +12,10 @@ Route::middleware('auth:api')->group(function()
 {
     Route::controller(UserController::class)->group(function (){
         Route::get('/user','index');//Anasayfa(kişiye ait derslerin görüntülendiği sayfa)
+        Route::get('/user/groupchats','getGroupChats');//Ders Sohbetleri
+        Route::get('/user/singlechats','getsingleChats');//Tekli Sohbetler
         Route::get('/user/academics','academicsList');//Akademisyenler Listesi
-        Route::get('/user/groupchat/{conversation_id}','message');//Ders sohbeti İçerisindeki Mesajlar sayfası
+        Route::get('/user/groupchat/{conversation_id}','messages');//Ders sohbeti İçerisindeki Mesajlar sayfası
         Route::get('/user/singlechat/{user_id}','checkUsertoUserChat');//Kişiden kişiye mesaj kontrolü için gerekli conversation ve
         //user_conversation tablolarını oluşturmak ve o sohbet mesajlarını görüntülemek için
         Route::post('/user/message/{conversation_id}','messageCreate');//Grup İçerisinde mesaj oluşturmak için
@@ -21,7 +23,7 @@ Route::middleware('auth:api')->group(function()
         Route::get('/user/singlechat/{user_id}','checkUsertoUserChat');//Kişiden kişiye mesaj kontrolü için gerekli conversation ve
                                                                             //user_conversation tablolarını oluşturmak için
         Route::post('/user/update_send_message/{user_conversation_id}','updateSendMessage');
-        //Route::get('/user/deneme/{ders_id}','deneme');
+
     });
 });
 
