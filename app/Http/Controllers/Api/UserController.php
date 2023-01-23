@@ -114,6 +114,8 @@ class UserController extends Controller
         }
         return response()->json([
             'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
+            'user_id'=>$user->id,
+            'logined_user_name'=>$user->name,
             'akademisyenler' => $academics,
 
         ]);
@@ -147,9 +149,17 @@ class UserController extends Controller
         $user_type =$user->type;
         $conversation= Conversation::find($id);
         $logined_user_conversation=UserConversation::where('conversation_id',$conversation->id)->where('user_id',$user->id)->first();
+        //dd($logined_user_conversation);
         //Giriş yapan kişinin mesaj atılacak sohbette yetkisi var mı yokmu kontrolü için userconv rowunu getirdik
-        if($user_type==1||$user_type==0&&$logined_user_conversation->send_message==0)// eğer giriş yapan kişi  akademisyen veya öğrenciyse
-            // ve bu grupta msj atma yetkisi varsa mesaj at
+
+        if(!$logined_user_conversation)
+        {
+            return response()->json([
+                'error'=>'Bu Kişi Bu Sohbette Yok.'
+            ],401);
+        }
+        if($logined_user_conversation->send_message==0)// eğer giriş yapan kişi  akademisyen veya öğrenciyse
+            // ve bu sohbette msj atma yetkisi varsa mesaj at
         {
             //post metodu
             $message = new Message();
@@ -179,6 +189,7 @@ class UserController extends Controller
                 'message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu',
             ]);
         }
+
 
         else{
             return response()->json([
@@ -220,6 +231,13 @@ class UserController extends Controller
     public function checkUsertoUserChat($user_id)//Tekli Sohbetler için gerekli conversation ve user_convların oluşturulması
         //ve o sohbetin görüntülenmesi
     {
+        if($user_id==Auth::id())
+        {
+            return response()->json([
+                'error'=>'Kendinize Mesaj Atamazsınız.'
+            ],401);
+        }
+
         $user = Auth::user();
         $receiver = User::find($user_id);
 
