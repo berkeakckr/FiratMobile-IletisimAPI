@@ -18,8 +18,8 @@ class ApiController extends Controller
 public function login(Request $request)
 {
 
-    $email = $request->email;//Kullanıcı arayüzünden kullanıcı maili alınacak
-    $password= $request->password;//Kullanıcı arayüzünden kullanıcı şifresi alınacak
+    $email = $request->email;//Giriş arayüzünden kullanıcı maili alınacak
+    $password= $request->password;//Giriş arayüzünden kullanıcı şifresi alınacak
     //Şifre ve Mail kontrol aşaması
     if(Auth::attempt(['email'=>$email,'password'=>$password]))
     {

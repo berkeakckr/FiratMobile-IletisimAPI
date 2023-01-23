@@ -21,7 +21,7 @@ class ConversationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+   /* public function index()
     {
         //$dersler=OBSHelper::getCallObs('190290054');
         $user = Auth::user();
@@ -61,7 +61,8 @@ class ConversationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+   /*
+   public function store(Request $request)
     {
         //$user = Auth::user();
         //$user= User::find(1);
@@ -84,14 +85,15 @@ class ConversationController extends Controller
         $conversation->everyone_chat = $request->everyone_chat;
         $conversation->save();
 
-        /*  $userconversation = UserConversation::create([
+          $userconversation = UserConversation::create([
               'user_id' => $user->id,
               'conversation_id' => $conversation->id
              // 'is_admin' => ,
              // 'send_message' =>
           ]);*/
-        return response()->json(['message'=>'Sohbet Başarılı Bir Şekilde Oluşturuldu']);
+      /*  return response()->json(['message'=>'Sohbet Başarılı Bir Şekilde Oluşturuldu']);
     }
+    */
 
     /**
      * Display the specified resource.
@@ -99,7 +101,7 @@ class ConversationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+   /* public function show($id)
     {
         $conversation = Conversation::find($id);
         $messages = Message::where('conversation_id',$conversation->id)->get();
@@ -111,8 +113,8 @@ class ConversationController extends Controller
         }
         $messagescount = $messages->count();
         return [$messages,$messagescount];
-    }
-    public function Get_Users($id)
+    }*/
+   /* public function Get_Users($id)
     {
         $conversation = Conversation::find($id);
         $user_conversations = UserConversation::whereIn('conversation_id', $conversation->user_conversation()->pluck('conversation_id'))->get();
@@ -126,7 +128,7 @@ class ConversationController extends Controller
         //$users = User::whereIn('user_id', $user_conversations->userss)->get();;
         return response()->json($users);
 
-    }
+    }*/
 
     /**
      * Update the specified resource in storage.
@@ -135,7 +137,7 @@ class ConversationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+   /* public function update(Request $request, $id)
     {
         $request->validate([
             'title'=>'min:1|max:100',
@@ -148,7 +150,7 @@ class ConversationController extends Controller
         $conversation->everyone_chat = $request->everyone_chat;
         $conversation->save();
         return response()->json(['message'=>'Sohbet Başarı İle Güncellendi']);
-    }
+    }*/
 
     /**
      * Remove the specified resource from storage.
@@ -156,7 +158,7 @@ class ConversationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+   /* public function destroy($id)
     {
         $conversation = Conversation::destroy($id);
         if (!$conversation){
@@ -166,5 +168,5 @@ class ConversationController extends Controller
             ]);
         }
         return response()->json(['message'=>'Sohbet Başarılı bir şekilde silindi']);
-    }
+    }*/
 }

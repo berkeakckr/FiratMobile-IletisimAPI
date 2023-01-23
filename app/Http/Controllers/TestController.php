@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class TestController extends BaseController
 {
-    public function index(){
+    /*public function index(){
 
         $veriler = [
             "name" => "Tuncay",
@@ -41,5 +41,5 @@ class TestController extends BaseController
 
         return response()->json("Test");
 
-    }
+    }*/
 }
