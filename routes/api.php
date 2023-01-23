@@ -18,11 +18,10 @@ Route::middleware('auth:api')->group(function()
         Route::get('/user/groupchat/{conversation_id}','messages');//Ders sohbeti İçerisindeki Mesajlar sayfası
         Route::get('/user/singlechat/{user_id}','checkUsertoUserChat');//Kişiden kişiye mesaj kontrolü için gerekli conversation ve
         //user_conversation tablolarını oluşturmak ve o sohbet mesajlarını görüntülemek için
-        Route::post('/user/message/{conversation_id}','messageCreate');//Grup İçerisinde mesaj oluşturmak için
-        //Route::delete('/user/message/{conversation_id}/{id}','messageDelete');//Grup içerisindeki Mesajı Silmek için
-        Route::get('/user/singlechat/{user_id}','checkUsertoUserChat');//Kişiden kişiye mesaj kontrolü için gerekli conversation ve
-                                                                            //user_conversation tablolarını oluşturmak için
+        Route::post('/user/message/{conversation_id}','messageCreate');//Grup veya Özel Sohbette mesaj oluşturmak için
+        //Route::delete('/user/message/{conversation_id}/{id}','messageDelete');//Grup veya Özel Sohbet içerisindeki Mesajı Silmek için
         Route::post('/user/update_send_message/{user_conversation_id}','updateSendMessage');
+        //sohbetteki kişinin mesaj atıp atmama durumunu güncellemek için oluşturulan route
 
     });
 });

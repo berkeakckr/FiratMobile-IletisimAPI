@@ -20,7 +20,7 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    /*public function index()
     {
         //get() metodu
         $message = Message::all();
@@ -28,7 +28,7 @@ class MessageController extends Controller
             return response()->json(['message'=>'Mesaj Bulunamadı']);
         }
         return $message;
-    }
+    }*/
 
     /**
      * Store a newly created resource in storage.
@@ -36,7 +36,7 @@ class MessageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+   /* public function store(Request $request)
     {
         $user = Auth::user();
         $user_type =$user->type;
@@ -65,7 +65,7 @@ class MessageController extends Controller
                   // 'readed' => $data['type']
               ]);*/
 
-            return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
+          /*  return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
         }
         if($user_type==0&& $conversation->type==0 && $user_conversation->status=='is_akademisyen'
             && Auth::id()!=$user_conversation->user_id)
@@ -92,7 +92,7 @@ class MessageController extends Controller
                   // 'readed' => $data['type']
               ]);*/
 
-            return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
+       /*     return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
         }
         else{
 
@@ -114,9 +114,9 @@ class MessageController extends Controller
 
               return response()->json([
                   'error'=>'Bir öğrenci başka bir öğrenciye mesaj atamaz.'
-              ],401);*/
+              ],401);
 
-    }
+    }*/
 
     /**
      * Display the specified resource.
@@ -124,7 +124,7 @@ class MessageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    /*public function show($id)
     {
         //get()
         $message = Message::find($id);
@@ -135,7 +135,7 @@ class MessageController extends Controller
             ]);
         }
         return $message;
-    }
+    }*/
 
     /**
      * Update the specified resource in storage.
@@ -144,7 +144,7 @@ class MessageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    /*public function update(Request $request, $id)
     {
         //put()
         $message = Message::findOrFail($id);
@@ -158,7 +158,7 @@ class MessageController extends Controller
         $message->conversation_id = $request->conversation_id;
         $message->save();
         return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Güncellendi']);
-    }
+    }*/
 
     /**
      * Remove the specified resource from storage.
@@ -166,7 +166,7 @@ class MessageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+   /* public function destroy($id)
     {
         //delete()
         $message = Message::destroy($id);
@@ -177,5 +177,5 @@ class MessageController extends Controller
             ]);
         }
         return response()->json(['message'=>'Mesaj Başarılı bir şekilde silindi']);
-    }
+    }*/
 }

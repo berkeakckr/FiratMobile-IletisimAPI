@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 class DatabaseController extends Controller
 {
-    public static function dersleriEkle()
+    public static function dersleriEkle()//Seed işleminden sonra dersler tablosundaki verileri conversation tablosuna otomatik
+        //eklemek için
     {
         $dersler = Ders::all();
         foreach ($dersler as $ders) {
@@ -31,9 +32,10 @@ class DatabaseController extends Controller
     public static function check()
         {
         $user_dersler = UserDers::where('user_id',Auth::id())->get()->pluck('ders_id');
+        //pluck ile giriş yapan kişiye ait UserDerslerin karşılaştırma yapılması için ders_idlerini aldık.
         foreach ($user_dersler as $user_ders ){
             if(!UserConversation::where('user_id',Auth::id())->where('conversation_id',Conversation::where('ders_id',$user_ders)->first()->id)->first()){
-                //Öğrenci eğer dersinin conversationuna dahil edilmediyse onu dahil et
+                //Sorgunun anlamı,giriş yapan kişi eğer dersinin conversationuna dahil edilmediyse onu dahil et
                 //önce conversationun firstini alıyoruz(örn:dağıtık dersinin bir kaydı var ve onu alıyoruz
                 //sonra giriş yapan kişinin user conversationlarındaki o conversationun firstini alıyoruz(zaten bir grupta birden fazla
                 //bulunamayız,sonra en başa ! koyuyoruz ve eğer böyle bir kayıt yoksa demiş oluyoruz.Daha sonra o user conversationu
