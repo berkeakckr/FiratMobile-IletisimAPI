@@ -97,6 +97,7 @@ class UserController extends Controller
             'logined_user_name'=>$user->name,
             'receiver_names'=>$receiver_conversation_names,
             'conversations' => $conversations,
+            'conversations_id'=>$conversations_id
             //'messagecount' => $messagecount.' Mesaj Bulunmakta.',
             //'message' => $messages
 
@@ -301,6 +302,7 @@ class UserController extends Controller
                 'logined_user_name' => $user->name,
                 'receiver_name' => User::where('id', $user_conversation_2->user_id)->first()->name,
                 'conversation' => $conversation->title . ' Mesaj Kutusundasınız',
+                'conversation_id' => $conversation->id,
                 'send_message' => $user_conversation_1->send_message,
                 'messages' => $messages
             ]);
@@ -318,9 +320,11 @@ class UserController extends Controller
             return response()->json([
                 'user' => $user->name . '(' . $user->email . ')' . ' Kişisine Ait Hesaptasınız.',
                 'user_id' => $user->id,
+                'user_name'=>$user->name,
                 'receiver_id' => User::where('id',$receiver_conversation)->first()->id,
                 'receiver_name' => User::where('id', $receiver_conversation)->first()->name,
                 'conversation' => $single_chat->title . ' Mesaj Kutusundasınız',
+                'conversation_id'=>$single_chat->id,
                 'send_message' => $user_conversation->send_message,
                 'messages' => $messages
             ]);
