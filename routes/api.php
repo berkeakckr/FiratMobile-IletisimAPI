@@ -16,6 +16,7 @@ Route::middleware('auth:api')->group(function()
         Route::get('/user/singlechats','getsingleChats');//Tekli Sohbetler
         Route::get('/user/academics','academicsList');//Akademisyenler Listesi
         Route::get('/user/groupchat/{conversation_id}','messages');//Ders sohbeti İçerisindeki Mesajlar sayfası
+        Route::get('/user/chatlist/{conversation_id}','getChatList');//Sohbet içerisindeki kişileri listelemek için
         Route::get('/user/singlechat/{user_id}','checkUsertoUserChat');//Kişiden kişiye mesaj kontrolü için gerekli conversation ve
         //user_conversation tablolarını oluşturmak ve o sohbet mesajlarını görüntülemek için
         Route::post('/user/message/{conversation_id}','messageCreate');//Grup veya Özel Sohbette mesaj oluşturmak için
