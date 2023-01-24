@@ -110,7 +110,7 @@ class UserController extends Controller
         //dd($user_bolum_id);
         $user_ids=UserBolum::where('bolum_id',$user_bolum_id)->get()->pluck('user_id');
         //dd($user_ids);
-        $academics=User::whereIn('id',$user_ids)->where('type',1)->get();
+        $academics=User::whereIn('id',$user_ids)->where('type',1)->get(['id','name','email']);
         //Giriş Yapan Kişinin Bölümünde olan ve akademisyen(type==1) olanları getir
 
         if (!$academics){
