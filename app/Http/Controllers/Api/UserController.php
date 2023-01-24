@@ -20,8 +20,8 @@ class UserController extends Controller
 {
     public function index(){//Giriş Yapan Kişinin Tüm Sohbetlerini Görüntüleme
         $user = Auth::user();
-        $messages = Message::where('user_id',$user->id)->orderBy('created_at','asc')->get();
-        //mesajları artan oluşturma sırasına göre getir
+        $messages = Message::where('user_id',$user->id)->orderBy('created_at','desc')->get();
+        //mesajları azalan oluşturma sırasına göre getir
         //$conversation
         if (!$messages){
             return response()->json([
@@ -132,8 +132,8 @@ class UserController extends Controller
         $user_conversation = UserConversation::where('user_id', $user->id)->where('conversation_id',$conversation_id)->first();
         //giriş yapan kişinin parametre olarak gönderilen id değerine ait user_convunu  bul
         $conversation = Conversation::find($conversation_id); //parametre olarak gönderilen id değerine ait dersi bul
-        $messages = Message::where('conversation_id',$conversation->id)->orderBy('created_at','asc')->get();
-        //mesajları artan oluşturma sırasına göre getir
+        $messages = Message::where('conversation_id',$conversation->id)->orderBy('created_at','desc')->get();
+        //mesajları azalan oluşturma sırasına göre getir
         //Conversation idsine ait tüm  mesajları görüntüle
 
 
@@ -291,8 +291,8 @@ class UserController extends Controller
                 'conversation_id' => $conversation->id,
                 'send_message' => 0,
             ]);
-            $messages = Message::where('conversation_id', $conversation->id)->orderBy('created_at', 'asc')->get();
-            //mesajları artan oluşturma sırasına göre getir
+            $messages = Message::where('conversation_id', $conversation->id)->orderBy('created_at', 'desc')->get();
+            //mesajları azalan oluşturma sırasına göre getir
 
             return response()->json([
                 'user' => $user->name . '(' . $user->email . ')' . ' Kişisine Ait Hesaptasınız.',
@@ -312,8 +312,8 @@ class UserController extends Controller
             //Örn:normalde tabloda (Berke Akçakır ve Hakan Güler Sohbeti yazıyor),
             //biz burada o sohbete ait ve giriş yapmayan kişinin adını alıp sohbete yazdırıyoruz.
 
-            $messages = Message::where('conversation_id', $single_chat->id)->orderBy('created_at', 'asc')->get();
-            //mesajları artan oluşturma sırasına göre getir
+            $messages = Message::where('conversation_id', $single_chat->id)->orderBy('created_at', 'desc')->get();
+            //mesajları azalan oluşturma sırasına göre getir
 
             return response()->json([
                 'user' => $user->name . '(' . $user->email . ')' . ' Kişisine Ait Hesaptasınız.',
