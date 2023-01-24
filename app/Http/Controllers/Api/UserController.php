@@ -128,6 +128,14 @@ class UserController extends Controller
         ]);
     }
 
+    public function getChatList($conversation_id){
+        $conversation=Conversation::find($conversation_id);
+        $user_conversations=UserConversation::where('conversation_id',$conversation->id)->get()->pluck('user_id');
+        return response()->json([
+            'list'=>User::whereIn('id',$user_conversations)->get(['id','name'])
+        ]);
+    }
+
     public function messages($conversation_id){
         $user = Auth::user();
         $user_conversation = UserConversation::where('user_id', $user->id)->where('conversation_id',$conversation_id)->first();
