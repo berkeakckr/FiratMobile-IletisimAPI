@@ -20,6 +20,7 @@ public function login(Request $request)
 
     $email = $request->email;//Giriş arayüzünden kullanıcı maili alınacak
     $password= $request->password;//Giriş arayüzünden kullanıcı şifresi alınacak
+    $device_mac_adress=$request->device_mac_adress;
     //Şifre ve Mail kontrol aşaması
     if(Auth::attempt(['email'=>$email,'password'=>$password]))
     {
@@ -28,6 +29,10 @@ public function login(Request $request)
         DatabaseController::check();
         $user_bolum=UserBolum::where('user_id',Auth::id())->get()->pluck('bolum_id');
         $bolum_adi=Bolum::where('id',$user_bolum)->get()->pluck('bolum_adi');
+        $user=User::where('id',Auth::id())->first();
+        $user->device_mac_adress=$device_mac_adress;
+        $user->save();
+
         return response()->json([
             'success'=>$success,
             'type'=>Auth::user()->type,
