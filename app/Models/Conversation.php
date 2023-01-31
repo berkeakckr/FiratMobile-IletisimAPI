@@ -4,11 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Conversation extends Model
 {
     protected $fillable = ['title','description','type','everyone_chat','ders_id'];
     use HasFactory;
+    protected $appends = array('chat_name');
+
+    public function getChatNameAttribute()
+    {
+        return ltrim(str_replace("ve","",str_replace(Auth::user()->name,"",$this->title))," ");
+    }
     public function messages(){
         return $this->hasMany('App\Models\Message');
     }

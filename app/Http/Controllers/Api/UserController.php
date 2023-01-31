@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helper\EnumClass;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Notification;
@@ -84,6 +85,7 @@ class UserController extends Controller
         //normal halinde hem gönderici ve hem alıcı isimleri var.
 
         //$messagecount = $messages->count();
+
         if (!$conversations){
             return response()->json([
                 'status' => 401,
@@ -95,7 +97,6 @@ class UserController extends Controller
             'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
             'user_id'=>$user->id,
             'logined_user_name'=>$user->name,
-            'receiver_names'=>$receiver_conversation_names,
             'conversations' => $conversations,
             'conversations_id'=>$conversations_id
             //'messagecount' => $messagecount.' Mesaj Bulunmakta.',
@@ -152,7 +153,9 @@ class UserController extends Controller
         $user_conversation = UserConversation::where('user_id', $user->id)->where('conversation_id',$conversation_id)->first();
         //giriş yapan kişinin parametre olarak gönderilen id değerine ait user_convunu  bul
         $conversation = Conversation::find($conversation_id); //parametre olarak gönderilen id değerine ait dersi bul
-        $messages = Message::where('conversation_id',$conversation->id)->orderBy('created_at','desc')->get();
+        $messages = Message::where('conversation_id',$conversation->id)->join('users', 'messages.user_id', '=', 'users.id')->orderBy('messages.created_at','desc')->get(['users.id','name','text']);
+
+
         //mesajları azalan oluşturma sırasına göre getir
         //Conversation idsine ait tüm  mesajları görüntüle
 
@@ -164,7 +167,7 @@ class UserController extends Controller
                 'logined_user_name'=>$user->name,
                 'conversation' => $conversation->title.' Mesaj Kutusundasınız',
                 'send_message'=>$user_conversation->send_message,
-                'messages' => $messages
+                'messages' => $messages,
             ]);
 
 
@@ -209,6 +212,8 @@ class UserController extends Controller
                 $notification->user_id =$users;
 
                 $notification->save();
+
+                EnumClass::sendNotification($users->name.'Kişisi Mesaj Gönderdi','asdasd',$users->device_mac_adress);
             }
 
             return response()->json([
