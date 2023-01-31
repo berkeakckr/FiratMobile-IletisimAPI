@@ -212,8 +212,9 @@ class UserController extends Controller
                 $notification->user_id =$users;
 
                 $notification->save();
+                //dd(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','-',User::where('id',$users)->get()->pluck('device_mac_adress'));
 
-                EnumClass::sendNotification($users->name.'Kişisi Mesaj Gönderdi','asdasd',$users->device_mac_adress);
+                EnumClass::sendNotification(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','-',User::where('id',$users)->get()->pluck('device_mac_adress'));
             }
 
             return response()->json([
