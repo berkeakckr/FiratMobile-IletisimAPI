@@ -136,9 +136,10 @@ class UserController extends Controller
         ]);
     }
 
-    public function getDanismanList($danisman_id){
+    public function getDanismanList(){
+        $user = Auth::user();
         return response()->json([
-            'list'=>User::where('id',$danisman_id)->get([
+            'list'=>User::where('id',$user->danisman_id)->first([
                 'id',
                 'name',
                 'email',
