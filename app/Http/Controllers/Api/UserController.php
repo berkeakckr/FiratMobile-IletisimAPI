@@ -136,6 +136,16 @@ class UserController extends Controller
         ]);
     }
 
+    public function getDanismanList($danisman_id){
+        return response()->json([
+            'list'=>User::where('id',$danisman_id)->get([
+                'id',
+                'name',
+                'email',
+            ])
+        ]);
+    }
+
     public function messages($conversation_id){
         $user = Auth::user();
         $user_conversation = UserConversation::where('user_id', $user->id)->where('conversation_id',$conversation_id)->first();
