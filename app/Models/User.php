@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -24,7 +25,12 @@ class User extends Authenticatable
         'password',
         'type',
     ];
+   /* protected $appends = array('bolum');
 
+    public static function getBolumAttribute($user_id)
+    {
+        return UserBolum::where('user_id',$user_id)->join('bolum', 'user_bolum.bolum_id', '=', 'bolum.id')->get(['bolum.bolum_adi']);
+    }*/
     /**
      * The attributes that should be hidden for arrays.
      *

@@ -39,6 +39,7 @@ public function login(Request $request)
             'id'=>Auth::id(),
             'name'=>Auth::user()->name,
             'bolum'=>$bolum_adi,
+            'danisman_id'=>Auth::user()->danisman_id,
         ], 200);
     }
     return response()->json([
