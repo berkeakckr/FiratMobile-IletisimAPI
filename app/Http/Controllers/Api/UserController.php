@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helper\EnumClass;
 use App\Http\Controllers\Controller;
+use App\Models\Bolum;
 use App\Models\Conversation;
 use App\Models\Notification;
 use App\Models\UserBolum;
@@ -134,6 +135,15 @@ class UserController extends Controller
         $user_conversations=UserConversation::where('conversation_id',$conversation->id)->get()->pluck('user_id');
         return response()->json([
             'list'=>User::whereIn('id',$user_conversations)->get(['id','name'])
+        ]);
+    }
+    public function getUserInfo($user_id){
+        //User::getBolumAttribute($user_id);
+        $bolum_adi=UserBolum::where('user_id',$user_id)->join('bolum', 'user_bolum.bolum_id', '=', 'bolum.id')->get(['bolum.bolum_adi']);
+        $user=User::where('id',$user_id)->get(['id','name','email','type']);
+        return response()->json([
+            'user'=>$user,
+            'bolum_adi'=>$bolum_adi,
         ]);
     }
 
