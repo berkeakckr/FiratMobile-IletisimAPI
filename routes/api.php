@@ -13,11 +13,12 @@ Route::middleware('auth:api')->group(function()
     Route::controller(UserController::class)->group(function (){
         Route::get('/user','index');//Anasayfa(kişiye ait derslerin görüntülendiği sayfa)
         Route::get('/user/groupchats','getGroupChats');//Ders Sohbetleri
+        Route::get('/user/deneme','dersler');//Ders Sohbetleri
         Route::get('/user/singlechats','getsingleChats');//Tekli Sohbetler
         Route::get('/user/academics','academicsList');//Akademisyenler Listesi
         Route::get('/user/groupchat/{conversation_id}','messages');//Ders sohbeti İçerisindeki Mesajlar sayfası
         Route::get('/user/chatlist/{conversation_id}','getChatList');//Sohbet içerisindeki kişileri listelemek için
-        Route::get('/user/userinfo/{user_id}','getUserInfo');//Sohbet içerisindeki kişileri listelemek için
+        Route::get('/user/userinfo/{user_id}','getUserInfo');//Sohbet içerisinde tıklanan kişiyi listelemek için
         Route::get('/user/singlechat/{user_id}','checkUsertoUserChat');//Kişiden kişiye mesaj kontrolü için gerekli conversation ve
         Route::get('/user/danisman','getDanismanList');
         //user_conversation tablolarını oluşturmak ve o sohbet mesajlarını görüntülemek için

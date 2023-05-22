@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helper\EnumClass;
+use App\Helper\OBSHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Bolum;
 use App\Models\Conversation;
@@ -18,8 +19,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Http;
+
 class UserController extends Controller
 {
+
     public function index(){//Giriş Yapan Kişinin Tüm Sohbetlerini Görüntüleme
         $user = Auth::user();
         $messages = Message::where('user_id',$user->id)->orderBy('created_at','desc')->get();
@@ -65,6 +70,12 @@ class UserController extends Controller
             //'messagecount' => $messagecount.' Mesaj Bulunmakta.',
             //'message' => $messages
 
+        ]);
+    }
+    public function dersler(){
+        $dersler = OBSHelper::getCallObs('190290054');
+        return response()->json([
+            'dersler'=>OBSHelper::getCallObs('190290054')
         ]);
     }
     public function getSingleChats()//Giriş Yapan Kişinin Sadece Özel Sohbetlerini Getirme
@@ -186,6 +197,7 @@ class UserController extends Controller
 
     public function messageCreate(Request $request,$id)//Mesaj gönderme fonksiyonu
     {
+
         $user = Auth::user();
         $user_type =$user->type;
         $conversation= Conversation::find($id);
@@ -213,6 +225,14 @@ class UserController extends Controller
             $message->user_id = $user->id;
             $message->conversation_id = $id;
             $message->save();
+            // Mesajı Redis üzerinden yayınla
+          /*  $redis = Redis::connection();
+            $redis->publish('new_message', json_encode([
+                'text' => $message->text,
+                'user_id' => $message->user_id,
+                'conversation_id' => $message->conversation_id,
+                // Diğer mesaj bilgileri...
+            ]));*/
             $users_to_message=UserConversation::where('conversation_id',$id)->where('user_id','!=',Auth::id())->get()->pluck('user_id');
             //dd($users_to_message->first());
             foreach($users_to_message as $users)
