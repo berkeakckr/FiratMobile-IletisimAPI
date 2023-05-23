@@ -14,6 +14,7 @@ class OBSHelper{
             ];
             $result = Http::withHeaders([
                 'Content-Type' => 'application/json',
+
             ])->withToken($token)->get($url,$params);
         }else{
             $result = Http::withHeaders([
