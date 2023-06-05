@@ -118,7 +118,7 @@ class UserController extends Controller
                 $deneme=User::where('id',$users)->get()->pluck('device_mac_adress');
                 //dd(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','-',User::where('id',$users)->get()->pluck('device_mac_adress'));
 
-                EnumClass::sendNotification(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','Mesaj',User::where('id',$users)->get()->pluck('device_mac_adress')->all());
+                EnumClass::sendNotification(User::where('id',$users)->get()->pluck('name').' Mesaj Gönderdi',$request->text,User::where('id',$users)->get()->pluck('device_mac_adress')->all());
             }
 
             return response()->json([
@@ -126,6 +126,7 @@ class UserController extends Controller
                 'message_owner_name'=>User::where('id',$message->user_id)->pluck('name')->first(),
                 'message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu',
                 'adresler'=>$deneme,
+                'firebase'=>EnumClass::$result,
             ]);
         }
 
