@@ -21,6 +21,11 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Http;
+use ElephantIO\Client;
+use ElephantIO\Engine\SocketIO\Version2X;
+
+use Illuminate\Support\Facades\Broadcast;
+
 
 class UserController extends Controller
 {
@@ -52,6 +57,99 @@ class UserController extends Controller
 
         ]);
     }
+    public function messageCreate(Request $request,$id)//Mesaj gönderme fonksiyonu
+    {
+
+        $user = Auth::user();
+        $user_type =$user->type;
+        $conversation= Conversation::find($id);
+        $logined_user_conversation=UserConversation::where('conversation_id',$conversation->id)->where('user_id',$user->id)->first();
+        //dd($logined_user_conversation);
+        //Giriş yapan kişinin mesaj atılacak sohbette yetkisi var mı yokmu kontrolü için userconv rowunu getirdik
+
+        if(!$logined_user_conversation)
+        {
+            return response()->json([
+                'error'=>'Bu Kişi Bu Sohbette Yok.'
+            ],401);
+        }
+        if($logined_user_conversation->send_message==0)// eğer giriş yapan kişi  akademisyen veya öğrenciyse
+            // ve bu sohbette msj atma yetkisi varsa mesaj at
+        {
+            //post metodu
+            $message = new Message();
+            $message->text = $request->text;
+            if($request->hasFile('file')){
+                $imageName=time().rand(1,1000).'.'.$request->file->getClientOriginalExtension();
+                $request->file->move(public_path('images'),$imageName);
+                $message->file='images/'.$imageName;
+            }
+            $message->user_id = $user->id;
+            $message->conversation_id = $id;
+            $message->save();
+            //$socket = new Client(new Version2X('http://localhost:3000'));
+            //$socket->initialize();
+            //$socket->emit('message', $message->text);
+            // Mesajı Redis üzerinden yayınla
+            /*  $redis = Redis::connection();
+              $redis->publish('new_message', json_encode([
+                  'text' => $message->text,
+                  'user_id' => $message->user_id,
+                  'conversation_id' => $message->conversation_id,
+                  // Diğer mesaj bilgileri...
+              ]));*/
+            // Mesajı Socket.IO üzerinden yayınla
+          /*  Broadcast::socket('http://localhost:3000')->emit('new_message', [
+                'text' => $message->text,
+                'user_id' => $message->user_id,
+                'conversation_id' => $message->conversation_id,
+                // Diğer mesaj bilgileri...
+            ]);*/
+            $deneme="";
+            $users_to_message=UserConversation::where('conversation_id',$id)->where('user_id','!=',Auth::id())->get()->pluck('user_id');
+            //dd($users_to_message->first());
+            foreach($users_to_message as $users)
+            {
+                $notification =new Notification();
+                $notification->message_id =$message->id;
+                $notification->user_id =$users;
+
+                $notification->save();
+                $deneme=User::where('id',$users)->get()->pluck('device_mac_adress');
+                //dd(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','-',User::where('id',$users)->get()->pluck('device_mac_adress'));
+
+                EnumClass::sendNotification(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','Mesaj',User::where('id',$users)->get()->pluck('device_mac_adress')->all());
+            }
+
+            return response()->json([
+                'message_owner_id'=>$message->user_id,
+                'message_owner_name'=>User::where('id',$message->user_id)->pluck('name')->first(),
+                'message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu',
+                'adresler'=>$deneme,
+            ]);
+        }
+
+
+        else{
+            return response()->json([
+                'error'=>'Mesaj Gönderilme Durumu Kapalı.'
+            ],401);
+        }
+
+
+        // $conversation->id = $request->conversation_id;
+        /*  if($conversation->type==0 && $conversation->id==1 && $user->type==1)
+          {
+              $message->save();
+              return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
+          }
+
+
+              return response()->json([
+                  'error'=>'Bir öğrenci başka bir öğrenciye mesaj atamaz.'
+              ],401);*/
+
+    }
     public function getGroupChats()//Giriş Yapan Kişinin Sadece Ders Sohbetlerini Getirme
     {
         $user = Auth::user();
@@ -73,9 +171,15 @@ class UserController extends Controller
         ]);
     }
     public function dersler(){
-        $dersler = OBSHelper::getCallObs('190290054');
+        $dersler = OBSHelper::getCallDersler('190290054');
         return response()->json([
-            'dersler'=>OBSHelper::getCallObs('190290054')
+            'dersler'=>$dersler
+        ]);
+    }
+    public function danisman(){
+        $academicians = OBSHelper::getDanisman('academician_information' , '190290054');
+        return response()->json([
+            'danisman'=>$academicians
         ]);
     }
     public function getSingleChats()//Giriş Yapan Kişinin Sadece Özel Sohbetlerini Getirme
@@ -194,87 +298,6 @@ class UserController extends Controller
 
     }
 
-
-    public function messageCreate(Request $request,$id)//Mesaj gönderme fonksiyonu
-    {
-
-        $user = Auth::user();
-        $user_type =$user->type;
-        $conversation= Conversation::find($id);
-        $logined_user_conversation=UserConversation::where('conversation_id',$conversation->id)->where('user_id',$user->id)->first();
-        //dd($logined_user_conversation);
-        //Giriş yapan kişinin mesaj atılacak sohbette yetkisi var mı yokmu kontrolü için userconv rowunu getirdik
-
-        if(!$logined_user_conversation)
-        {
-            return response()->json([
-                'error'=>'Bu Kişi Bu Sohbette Yok.'
-            ],401);
-        }
-        if($logined_user_conversation->send_message==0)// eğer giriş yapan kişi  akademisyen veya öğrenciyse
-            // ve bu sohbette msj atma yetkisi varsa mesaj at
-        {
-            //post metodu
-            $message = new Message();
-            $message->text = $request->text;
-            if($request->hasFile('file')){
-                $imageName=time().rand(1,1000).'.'.$request->file->getClientOriginalExtension();
-                $request->file->move(public_path('images'),$imageName);
-                $message->file='images/'.$imageName;
-            }
-            $message->user_id = $user->id;
-            $message->conversation_id = $id;
-            $message->save();
-            // Mesajı Redis üzerinden yayınla
-          /*  $redis = Redis::connection();
-            $redis->publish('new_message', json_encode([
-                'text' => $message->text,
-                'user_id' => $message->user_id,
-                'conversation_id' => $message->conversation_id,
-                // Diğer mesaj bilgileri...
-            ]));*/
-            $users_to_message=UserConversation::where('conversation_id',$id)->where('user_id','!=',Auth::id())->get()->pluck('user_id');
-            //dd($users_to_message->first());
-            foreach($users_to_message as $users)
-            {
-                $notification =new Notification();
-                $notification->message_id =$message->id;
-                $notification->user_id =$users;
-
-                $notification->save();
-                //dd(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','-',User::where('id',$users)->get()->pluck('device_mac_adress'));
-
-                EnumClass::sendNotification(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','-',User::where('id',$users)->get()->pluck('device_mac_adress'));
-            }
-
-            return response()->json([
-                'message_owner_id'=>$message->user_id,
-                'message_owner_name'=>User::where('id',$message->user_id)->pluck('name')->first(),
-                'message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu',
-            ]);
-        }
-
-
-        else{
-            return response()->json([
-                'error'=>'Mesaj Gönderilme Durumu Kapalı.'
-            ],401);
-        }
-
-
-        // $conversation->id = $request->conversation_id;
-        /*  if($conversation->type==0 && $conversation->id==1 && $user->type==1)
-          {
-              $message->save();
-              return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
-          }
-
-
-              return response()->json([
-                  'error'=>'Bir öğrenci başka bir öğrenciye mesaj atamaz.'
-              ],401);*/
-
-    }
 
 
     public function messageDelete($conversation_id,$message_id)

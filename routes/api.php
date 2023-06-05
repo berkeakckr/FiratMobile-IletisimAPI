@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 //Route::post('register',[\App\Http\Controllers\ApiController::class,'create']); //Kullanıcı Oluşturma
 
 Route::post('login',[\App\Http\Controllers\ApiController::class,'login']);  //Kullanıcı girişi
@@ -20,14 +21,24 @@ Route::middleware('auth:api')->group(function()
         Route::get('/user/chatlist/{conversation_id}','getChatList');//Sohbet içerisindeki kişileri listelemek için
         Route::get('/user/userinfo/{user_id}','getUserInfo');//Sohbet içerisinde tıklanan kişiyi listelemek için
         Route::get('/user/singlechat/{user_id}','checkUsertoUserChat');//Kişiden kişiye mesaj kontrolü için gerekli conversation ve
-        Route::get('/user/danisman','getDanismanList');
+        //Route::get('/user/danisman','getDanismanList');
+        Route::get('/user/danisman','danisman');
         //user_conversation tablolarını oluşturmak ve o sohbet mesajlarını görüntülemek için
         Route::post('/user/message/{conversation_id}','messageCreate');//Grup veya Özel Sohbette mesaj oluşturmak için
+
         //Route::delete('/user/message/{conversation_id}/{id}','messageDelete');//Grup veya Özel Sohbet içerisindeki Mesajı Silmek için
         Route::post('/user/update_send_message/{user_conversation_id}','updateSendMessage');
         //sohbetteki kişinin mesaj atıp atmama durumunu güncellemek için oluşturulan route
-
     });
-});
 
+});
+Route::post('/message', function (Request $request) {
+    $message = $request->input('message');
+
+    // Mesajı işleme ve kaydetme işlemlerini burada yapabilirsiniz
+
+    return response()->json([
+        'message' => 'Mesaj başarıyla işlendi ve kaydedildi.',
+    ]);
+});
 
