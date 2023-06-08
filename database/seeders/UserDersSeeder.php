@@ -29,6 +29,14 @@ class UserDersSeeder extends Seeder
                 'ders_id' => 1,
             ],
             [
+                'user_id' => 3,
+                'ders_id' => 1,
+            ],
+            [
+                'user_id' => 4,
+                'ders_id' => 1,
+            ],
+            [
                 'user_id' => 2,
                 'ders_id' => 2,
             ],
