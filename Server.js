@@ -1,29 +1,31 @@
+const http = require('http');
+const { Server } = require('socket.io');
 
-const express = require('express');
-const app = express();
-const http = require('http').createServer(app);
-const cors = require('cors'); // cors paketini import edin
-app.use(cors()); // CORS hatasını çözmek için eklenen satır
-const io = require('socket.io')(http, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
+// HTTP sunucusunu oluşturun
+const server = http.createServer();
+const port = 3000;
 
-io.on('connection', (socket) => {
-    console.log('a user connected');
+// Socket.IO sunucusunu oluşturun ve HTTP sunucusunu kullanarak başlatın
+const socketIO = new Server(server);
 
-    socket.on('message', (message) => {
-        console.log('message: ' + message);
-        io.emit('message', message);
+// Connection olayını dinleyin
+socketIO.on('connection', (socket) => {
+    const socketID = socket.id; // Socket ID değerini alın
+    console.log('Yeni bir bağlantı:', socketID);
+    console.log('Yeni bir kullanıcı bağlandı');
+
+    // test-event olayını dinleyin
+    socket.on('message', function (data) {
+        console.log(data);
     });
 
+    // Disconnect olayını dinleyin
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        console.log('Bir kullanıcı ayrıldı');
     });
 });
 
-http.listen(3000, () => {
-    console.log('listening on *:3000');
+// Sunucuyu dinleyin
+server.listen(port, () => {
+    console.log(`Sunucu çalışıyor: http://localhost:${port}`);
 });

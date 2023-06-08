@@ -23,9 +23,9 @@ class EnumClass
         //$deviceTokens = $device_mac_adress; // Bildirim göndermek istediğiniz cihaz token'larını burada kullanın
         //$title = $title2;
         //$body = $subTitle;
-
+     //dd($device_mac_adress);
         $datas = [
-            'to' => 'fS0SDjeKQA21ov0WgyL7gO:APA91bFUd-WDJCcdNNlw4jsZaXnsJMOYMpxVyNLUC35miLEG3Iplpi5XrZ363IaQsN_k6_7bsMNeWI4dJX3F5ZtO4cLYDNNReSjD-KLJg9HBv9uySQ3aAv6ownF7_vTmzqzQZK6V58RW',
+            'to' => $device_mac_adress,
             "collapse_key" => "type_a",
             'notification' => [
                 'title' => $title,
@@ -36,7 +36,6 @@ class EnumClass
                 "title"=> $title
             ],
         ];
-
        /*$url = 'https://fcm.googleapis.com/fcm/send';
         $token = 'key=AAAAXKLRl4E:APA91bG7AyWqyR0lI3s1qvcrX7FqZDgahFl-kn2dj4Z0Oahq29bZNnJX_4PrCrBH03Gc-qE1kMpU1qUmOKpUO9iWKoI3BEEzAqurvlZ1Qnfkz3aSl9pVWjITRa6BTQX7NzbrJIjIEfOy';
         //AIzaSyCaFpZY9g5CI497EF5F2Y8t5rT9nfznsdc

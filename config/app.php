@@ -162,6 +162,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Fruitcake\Cors\CorsServiceProvider::class,
+        BeyondCode\LaravelWebSockets\WebSocketsServiceProvider::class,
+
 
         /*
          * Package Service Providers...
@@ -230,6 +232,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'WebSockets' => BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter::class,
         'Cors' => Fruitcake\Cors\Facade\Cors::class,
 
     ],

@@ -27,6 +27,7 @@ use ElephantIO\Engine\SocketIO\Version2X;
 use Illuminate\Support\Facades\Broadcast;
 
 
+
 class UserController extends Controller
 {
 
@@ -87,39 +88,59 @@ class UserController extends Controller
             $message->user_id = $user->id;
             $message->conversation_id = $id;
             $message->save();
-            //$socket = new Client(new Version2X('http://localhost:3000'));
-            //$socket->initialize();
-            //$socket->emit('message', $message->text);
+
+            /*$socket = new Client(new Version2X('http://localhost:3000'));
+            $socket->initialize();
+            $socket->emit('message', $message->text);
             // Mesajı Redis üzerinden yayınla
-            /*  $redis = Redis::connection();
+              $redis = Redis::connection();
               $redis->publish('new_message', json_encode([
                   'text' => $message->text,
                   'user_id' => $message->user_id,
                   'conversation_id' => $message->conversation_id,
                   // Diğer mesaj bilgileri...
-              ]));*/
+              ]));
             // Mesajı Socket.IO üzerinden yayınla
-          /*  Broadcast::socket('http://localhost:3000')->emit('new_message', [
+            Broadcast::socket('http://localhost:8000/messageApi')->emit('new_message', [
                 'text' => $message->text,
                 'user_id' => $message->user_id,
                 'conversation_id' => $message->conversation_id,
                 // Diğer mesaj bilgileri...
-            ]);*/
-            $deneme="";
+            ]);
+            $deneme="";*/
             $users_to_message=UserConversation::where('conversation_id',$id)->where('user_id','!=',Auth::id())->get()->pluck('user_id');
-            //dd($users_to_message->first());
+            //1,3
+            $deneme=User::whereIn('id',$users_to_message)->get()->pluck('device_mac_adress')->toArray();
+            $same_ids = array_intersect($deneme);
+            //dd($same_ids);
+
+
+
             foreach($users_to_message as $users)
             {
+                //print($users);
                 $notification =new Notification();
                 $notification->message_id =$message->id;
                 $notification->user_id =$users;
 
                 $notification->save();
                 $deneme=User::where('id',$users)->get()->pluck('device_mac_adress');
-                //dd(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','-',User::where('id',$users)->get()->pluck('device_mac_adress'));
 
-                EnumClass::sendNotification(User::where('id',$users)->get()->pluck('name').' Mesaj Gönderdi',$request->text,User::where('id',$users)->get()->pluck('device_mac_adress')->all());
+
+                //dd(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','-',User::where('id',$users)->get()->pluck('device_mac_adress'));
+                //get(['id','name','email']
+                if(Conversation::where('id',$id)->where('ders_id',null)){
+                    EnumClass::sendNotification(User::where('id',$user->id)->get()->pluck('name'),$message->text,User::where('id',$users)->get()->pluck('device_mac_adress')->first());
+                }
+                else{
+                    EnumClass::sendNotification(Ders::where('id',$id)->get()->pluck('ders_adi'),$message->text,User::where('id',$users)->get()->pluck('device_mac_adress')->first());
+                }
+           //
+
+
+                //EnumClass::sendNotification(User::where('id',$user->id)->get()->pluck('name').' Mesaj Gönderdi',$request->text,User::whereIn('device_mac_adress',$same_ids)->first());
             }
+
 
             return response()->json([
                 'message_owner_id'=>$message->user_id,
@@ -128,6 +149,7 @@ class UserController extends Controller
                 'adresler'=>$deneme,
                 'firebase'=>EnumClass::$result,
             ]);
+
         }
 
 
