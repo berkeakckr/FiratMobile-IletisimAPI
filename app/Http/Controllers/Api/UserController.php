@@ -89,25 +89,7 @@ class UserController extends Controller
             $message->conversation_id = $id;
             $message->save();
 
-            /*$socket = new Client(new Version2X('http://localhost:3000'));
-            $socket->initialize();
-            $socket->emit('message', $message->text);
-            // Mesajı Redis üzerinden yayınla
-              $redis = Redis::connection();
-              $redis->publish('new_message', json_encode([
-                  'text' => $message->text,
-                  'user_id' => $message->user_id,
-                  'conversation_id' => $message->conversation_id,
-                  // Diğer mesaj bilgileri...
-              ]));
-            // Mesajı Socket.IO üzerinden yayınla
-            Broadcast::socket('http://localhost:8000/messageApi')->emit('new_message', [
-                'text' => $message->text,
-                'user_id' => $message->user_id,
-                'conversation_id' => $message->conversation_id,
-                // Diğer mesaj bilgileri...
-            ]);
-            $deneme="";*/
+
             $users_to_message=UserConversation::where('conversation_id',$id)->where('user_id','!=',Auth::id())->get()->pluck('user_id');
             //1,3
             $deneme=User::whereIn('id',$users_to_message)->get()->pluck('device_mac_adress')->toArray();
