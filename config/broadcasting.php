@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('BROADCAST_DRIVER', 'null'),
+    'default' => env('BROADCAST_DRIVER', 'redis'),
 
     /*
     |--------------------------------------------------------------------------
@@ -28,7 +28,14 @@ return [
     |
     */
 
+
     'connections' => [
+        'channels' => [
+            'test-channel' => [
+                'driver' => 'redis',
+                'name' => 'test-channel',
+            ],
+        ],
 
         'pusher' => [
             'driver' => 'pusher',
@@ -49,6 +56,7 @@ return [
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
+            'queue' => 'test-channel', // Redis kuyruk adınızı buraya ekleyin
         ],
 
         'log' => [
@@ -60,5 +68,6 @@ return [
         ],
 
     ],
+
 
 ];

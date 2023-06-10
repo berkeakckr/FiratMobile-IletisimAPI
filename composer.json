@@ -8,6 +8,7 @@
         "php": "^7.3|^8.0",
         "ext-curl": "*",
         "ext-json": "*",
+        "ashiina/socket.io-emitter": "^0.8.0",
         "beyondcode/laravel-websockets": "^1.14",
         "elephantio/elephant.io": "^4.2",
         "fruitcake/laravel-cors": "^3.0",

@@ -18,7 +18,7 @@ class EnumClass
         $oClass = new \ReflectionClass(get_called_class());
         return $oClass->getConstants();
     }
-    public static function sendNotification($title,$subTitle,$device_mac_adress)
+    public static function sendNotification($title,$subTitle,$username,$device_mac_adress,$message)
     {
         //$deviceTokens = $device_mac_adress; // Bildirim göndermek istediğiniz cihaz token'larını burada kullanın
         //$title = $title2;
@@ -26,14 +26,17 @@ class EnumClass
      //dd($device_mac_adress);
         $datas = [
             'to' => $device_mac_adress,
-            "collapse_key" => "type_a",
+            "collapse_key" => "type_a",// ard arda gönderilen mesajlarda son gönderilen mesajın gözükmesi için
             'notification' => [
-                'title' => $title,
+                'title' => $title[0],
                 'body' => $subTitle,
+                //'username' => $username,
             ],
             'data' => [
                 "body" => $subTitle,
-                "title"=> $title
+                "title"=> $title,
+                "message"=> $message,
+                'username' => $username,
             ],
         ];
        /*$url = 'https://fcm.googleapis.com/fcm/send';

@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\SendMessageEvent;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\UserController;
@@ -34,11 +35,20 @@ Route::middleware('auth:api')->group(function()
 });
 Route::post('/message', function (Request $request) {
     $message = $request->input('message');
-
-    // Mesajı işleme ve kaydetme işlemlerini burada yapabilirsiniz
-
-    return response()->json([
-        'message' => 'Mesaj başarıyla işlendi ve kaydedildi.',
-    ]);
+    app('socketio')->emit('message', $message); // Socket.IO'ya mesajı iletiyoruz
+    return response()->json(['success' => $message]);
 });
+/*Route::post('/message', function (Request $request) {
+    $message = $request->input('message');
+    event(new SendMessageEvent($message));
+    return response()->json(['success' => $message]);
 
+});*/
+/*Route::post('/messagee/', function (Request $request) {
+    $message = $request->input('message');
+
+    // Mesajı Socket.IO sunucusuna göndermek için bir olay tetikleyin
+    event(new SendMessageEvent($message));
+
+    return response()->json(['success' => true]);
+});*/

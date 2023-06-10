@@ -165,6 +165,7 @@ return [
         BeyondCode\LaravelWebSockets\WebSocketsServiceProvider::class,
 
 
+
         /*
          * Package Service Providers...
          */
@@ -221,7 +222,7 @@ return [
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'RateLimiter' => Illuminate\Support\Facades\RateLimiter::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
-        // 'Redis' => Illuminate\Support\Facades\Redis::class,
+        'Redis' => Illuminate\Support\Facades\Redis::class,
         'Request' => Illuminate\Support\Facades\Request::class,
         'Response' => Illuminate\Support\Facades\Response::class,
         'Route' => Illuminate\Support\Facades\Route::class,
@@ -234,6 +235,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'WebSockets' => BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter::class,
         'Cors' => Fruitcake\Cors\Facade\Cors::class,
+        //'SocketIO' => BeyondCode\LaravelWebSockets\Facades\SocketIO::class,
+
 
     ],
 
