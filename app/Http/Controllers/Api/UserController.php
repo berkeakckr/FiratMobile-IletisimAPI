@@ -2,29 +2,27 @@
 
 namespace App\Http\Controllers\Api;
 
+use ElephantIO\Client;
+use ElephantIO\Engine\SocketIO\Version3X;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Event;
+
+//use App\Events\SendMessageEvent;
 use App\Helper\EnumClass;
 use App\Helper\OBSHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Bolum;
 use App\Models\Conversation;
-use App\Models\Notification;
-use App\Models\UserBolum;
 use App\Models\Ders;
 use App\Models\Message;
+use App\Models\Notification;
 use App\Models\User;
+use App\Models\UserBolum;
 use App\Models\UserConversation;
-use App\Models\UserDers;
-use Database\Seeders\UserDersSeeder;
-use Illuminate\Database\Eloquent\Model;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Http;
-use ElephantIO\Client;
-use ElephantIO\Engine\SocketIO\Version2X;
-
-use Illuminate\Support\Facades\Broadcast;
 
 
 
@@ -89,6 +87,9 @@ class UserController extends Controller
             $message->conversation_id = $id;
             $message->save();
 
+            $socket = new Client(new Version3X('http://localhost:3000'));
+            $socket->initialize();
+            $socket->emit('message', [$message]);
 
             $users_to_message=UserConversation::where('conversation_id',$id)->where('user_id','!=',Auth::id())->get()->pluck('user_id');
             //1,3
@@ -111,12 +112,19 @@ class UserController extends Controller
 
                 //dd(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','-',User::where('id',$users)->get()->pluck('device_mac_adress'));
                 //get(['id','name','email']
-                if(Conversation::where('id',$id)->where('ders_id',null)){
-                    EnumClass::sendNotification(User::where('id',$user->id)->get()->pluck('name'),$message->text,User::where('id',$users)->get()->pluck('device_mac_adress')->first());
+                if(Conversation::where('id',$conversation->id)->where('ders_id',null)){
+
+                    EnumClass::sendNotification(User::where('id',$user->id)->get()->pluck('name'),$message->text,$user->name,User::where('id',$users)->get()->pluck('device_mac_adress')->first(),$message);
+                    //dd('girme');
                 }
                 else{
-                    EnumClass::sendNotification(Ders::where('id',$id)->get()->pluck('ders_adi'),$message->text,User::where('id',$users)->get()->pluck('device_mac_adress')->first());
+                    EnumClass::sendNotification(Ders::where('id',$id)->get()->pluck('ders_adi'),$message->text,$user->name,User::where('id',$users)->get()->pluck('device_mac_adress')->first(),$message);
+                    //dd('girsene');
+
                 }
+                //
+
+                //EnumClass::sendNotification(User::where('id',$user->id)->get()->pluck('name').' Mesaj Gönderdi',$request->text,User::whereIn('device_mac_adress',$same_ids)->first());
            //
 
 
