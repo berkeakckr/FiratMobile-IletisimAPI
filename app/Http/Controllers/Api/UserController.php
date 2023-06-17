@@ -88,10 +88,6 @@ class UserController extends Controller
             $message->conversation_id = $id;
             $message->save();
 
-            $socket = new Client(new Version2X('http://localhost:3000'));
-            $socket->initialize();
-            $socket->emit('message', $message->text);
-
             /*$socket = new Client(new Version3X('http://localhost:3000'));
             $socket->initialize();
             $socket->emit('message', [$message]);*/

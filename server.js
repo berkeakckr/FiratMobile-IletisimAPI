@@ -1,14 +1,9 @@
-const express = require('express');
-const app = express();
-const http = require('http').createServer(app);
-const cors = require('cors'); // cors paketini import edin
-app.use(cors()); // CORS hatasını çözmek için eklenen satır
-const io = require('socket.io')(http, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
+var express = require('express');
+var app = express();
+var http = require('http').Server(app);
+const socketio = require('socket.io');
+//var socketio = require('./socket');
+var io = socketio(http);
 
 // Express sunucusunu 8000 portunda çalıştırma
 var server = http.listen(8000, function() {
@@ -19,12 +14,6 @@ var server = http.listen(8000, function() {
 
 var socketIOServer = io.listen(3000);
 socketIOServer.attach(server);
-
-http.listen(3000, () => {
-    console.log('listening on *:3000');
-// Sunucuyu dinleyin
-    server.listen(port, () => {
-        console.log(`Sunucu çalışıyor: http://localhost:${port}`);
 
 io.on('connection', function(socket) {
     console.log("Socket connected:", socket.id);
