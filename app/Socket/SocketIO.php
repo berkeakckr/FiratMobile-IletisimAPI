@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Sockett;
+namespace App\Socket;
 /**
  * Class SocketIO
  * develope by psinetron (slybeaver)
@@ -34,5 +34,22 @@ class SocketIO
         $out .= "Sec-WebSocket-Version: 13\r\n";
         $out .= "Origin: *\r\n\r\n";
 
-      
+        fwrite($fd, $out);
+        // 101 switching protocols, see if echoes key
+        $result = fread($fd, 10000);
+
+        preg_match('#Sec-WebSocket-Accept:\s(.*)$#mU', $result, $matches);
+        $keyAccept = trim($matches[1]);
+        $expectedResonse = base64_encode(pack('H*', sha1($key . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')));
+        $handshaked = ($keyAccept === $expectedResonse) ? true : false;
+        if ($handshaked) {
+            fwrite($fd, $this->hybi10Encode('42["' . $action . '", "' . addslashes($data) . '"]'));
+            fread($fd, 1000000);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }
