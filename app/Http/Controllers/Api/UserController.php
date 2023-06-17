@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use ElephantIO\Client;
 use ElephantIO\Engine\SocketIO\Version3X;
+use Exception;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Event;
 
@@ -87,17 +88,15 @@ class UserController extends Controller
             $message->conversation_id = $id;
             $message->save();
 
-            $socket = new Client(new Version3X('http://localhost:3000'));
+            /*$socket = new Client(new Version3X('http://localhost:3000'));
             $socket->initialize();
-            $socket->emit('message', [$message]);
+            $socket->emit('message', [$message]);*/
 
             $users_to_message=UserConversation::where('conversation_id',$id)->where('user_id','!=',Auth::id())->get()->pluck('user_id');
             //1,3
             $deneme=User::whereIn('id',$users_to_message)->get()->pluck('device_mac_adress')->toArray();
             $same_ids = array_intersect($deneme);
             //dd($same_ids);
-
-
 
             foreach($users_to_message as $users)
             {
@@ -107,23 +106,34 @@ class UserController extends Controller
                 $notification->user_id =$users;
 
                 $notification->save();
-                $deneme=User::where('id',$users)->get()->pluck('device_mac_adress');
-
+                //$deneme=User::where('id',$users)->get()->pluck('device_mac_adress');
+                //dd(Conversation::where('id',$id)->get());
 
                 //dd(User::where('id',$users)->get()->pluck('name').'Kişisi Mesaj Gönderdi','-',User::where('id',$users)->get()->pluck('device_mac_adress'));
                 //get(['id','name','email']
-                if(Conversation::where('id',$conversation->id)->where('ders_id',null)){
+                $ders_idd=$conversation->ders_id;
 
-                    EnumClass::sendNotification(User::where('id',$user->id)->get()->pluck('name'),$message->text,$user->name,User::where('id',$users)->get()->pluck('device_mac_adress')->first(),$message);
-                    //dd('girme');
-                }
-                else{
-                    EnumClass::sendNotification(Ders::where('id',$id)->get()->pluck('ders_adi'),$message->text,$user->name,User::where('id',$users)->get()->pluck('device_mac_adress')->first(),$message);
-                    //dd('girsene');
+                try {
+                    if(empty($ders_idd)){
+                        EnumClass::sendNotification(User::where('id',Auth::id())->get()->pluck('name'),$message->text,$user->name,User::where('id',$users)->get()->pluck('device_mac_adress')->first(),$message,$ders_idd);
 
+                        //dd('girsene');
+                    }
+
+                    else{
+
+                        EnumClass::sendNotification(Ders::where('id',$id)->get()->pluck('ders_adi'),$message->text,$user->name,User::where('id',$users)->get()->pluck('device_mac_adress')->first(),$message,$ders_idd);
+
+                        //dd('girme');
+                    }
+
+
+                } catch (Exception $e) {
+
+                    return $e->getMessage();
                 }
+
                 //
-
                 //EnumClass::sendNotification(User::where('id',$user->id)->get()->pluck('name').' Mesaj Gönderdi',$request->text,User::whereIn('device_mac_adress',$same_ids)->first());
            //
 
