@@ -78,7 +78,9 @@ class UserController extends Controller
         {
             //post metodu
             $message = new Message();
-            $message->text = $request->text;
+            if(!empty($request->text)){
+                $message->text = $request->text;
+            }
             if($request->hasFile('file')){
                 $imageName=time().rand(1,1000).'.'.$request->file->getClientOriginalExtension();
                 $request->file->move(public_path('images'),$imageName);
@@ -200,9 +202,11 @@ class UserController extends Controller
         ]);
     }
     public function danisman(){
-        $academicians = OBSHelper::getDanisman('academician_information' , '190290054');
+        //$academicians = OBSHelper::getDanisman('academician_information' , '190290054');
+        $danisman=User::where('id',Auth::id())->get(['danisman_id']);
+
         return response()->json([
-            'danisman'=>$academicians
+            'danisman'=>$danisman
         ]);
     }
     public function getSingleChats()//Giriş Yapan Kişinin Sadece Özel Sohbetlerini Getirme
