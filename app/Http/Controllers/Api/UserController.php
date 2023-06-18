@@ -160,8 +160,8 @@ class UserController extends Controller
         }
 
 
-        // $conversation->id = $request->conversation_id;
-        /*  if($conversation->type==0 && $conversation->id==1 && $user->type==1)
+         $conversation->id = $request->conversation_id;
+          if($conversation->type==0 && $conversation->id==1 && $user->type==1)
           {
               $message->save();
               return response()->json(['message'=>'Mesaj Başarılı Bir Şekilde Oluşturuldu']);
@@ -170,26 +170,26 @@ class UserController extends Controller
 
               return response()->json([
                   'error'=>'Bir öğrenci başka bir öğrenciye mesaj atamaz.'
-              ],401);*/
+              ],401);
 
     }
     public function getGroupChats()//Giriş Yapan Kişinin Sadece Ders Sohbetlerini Getirme
     {
         $user = Auth::user();
-        //$messages = Message::where('user_id',$user->id)->orderBy('created_at','desc')->get();
+        $messages = Message::where('user_id',$user->id)->orderBy('created_at','desc')->get();
         //$conversation
 
         $user_conversations = UserConversation::where('user_id', $user->id)->get()->pluck('conversation_id');//Giriş yapan kişi hangi derslerde veya tekli sohbette varsa o rowların idsini aldık.
         //Akademisyen Tarafından alınan derslerin aktif gruplarını yayınlar
         $conversations = Conversation::whereIn('id',$user_conversations)->where('ders_id','!=',null)->get();//Giriş yapan kişinin derslerini görüntülemek için ders idsi boş olmayan dersleri getirdik.
-        //$messagecount = $messages->count();
+        $messagecount = $messages->count();
         return response()->json([
             'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
             'user_id'=>$user->id,
             'logined_user_name'=>$user->name,
             'conversations' => $conversations,
-            //'messagecount' => $messagecount.' Mesaj Bulunmakta.',
-            //'message' => $messages
+            'messagecount' => $messagecount.' Mesaj Bulunmakta.',
+            'message' => $messages
 
         ]);
     }
