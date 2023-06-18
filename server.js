@@ -1,19 +1,19 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-const socketio = require('socket.io');
-//var socketio = require('./socket');
+//const socketio = require('socket.io');
+var socketio = require('./socket');
 var io = socketio(http);
 
 // Express sunucusunu 8000 portunda çalıştırma
-var server = http.listen(8000, function() {
-    console.log('Express sunucusu 8000 portunda çalışıyor');
+var server = http.listen(3000, function() {
+    console.log('Express sunucusu 3000 portunda çalışıyor');
 });
 
 // Socket.IO sunucusunu 3000 portunda çalıştırma
 
-var socketIOServer = io.listen(3000);
-socketIOServer.attach(server);
+//var socketIOServer = io.listen(3000);
+//socketIOServer.attach(server);
 
 io.on('connection', function(socket) {
     console.log("Socket connected:", socket.id);

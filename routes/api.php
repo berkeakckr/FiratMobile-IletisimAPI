@@ -38,12 +38,12 @@ Route::post('/message', function (Request $request) {
     app('socketio')->emit('message', $message); // Socket.IO'ya mesajı iletiyoruz
     return response()->json(['success' => $message]);
 });
-Route::post('/message', function (Request $request) {
+/*Route::post('/message', function (Request $request) {
     $message = $request->input('message');
     event(new SendMessageEvent($message));
     return response()->json(['success' => $message]);
 
-});
+});*/
 /*Route::post('/messagee/', function (Request $request) {
     $message = $request->input('message');
 
