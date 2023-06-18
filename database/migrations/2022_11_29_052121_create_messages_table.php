@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->longText('text')->nullable();
+            $table->longText('text');
             $table->string('file')->nullable();
             $table->unsignedBigInteger('conversation_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
