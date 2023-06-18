@@ -18,7 +18,7 @@ class EnumClass
         $oClass = new \ReflectionClass(get_called_class());
         return $oClass->getConstants();
     }
-    public static function sendNotification($title,$subTitle,$username,$device_mac_adress,$message,$ders_id)
+    public static function sendNotification($title,$subTitle,$username,$device_mac_adress,$message,$ders_id,$conversation_id)
     {
         //$deviceTokens = $device_mac_adress; // Bildirim göndermek istediğiniz cihaz token'larını burada kullanın
         //$title = $title2;
@@ -44,6 +44,7 @@ class EnumClass
                         "title"=> $title[0],
                         "message"=> $message,
                         'username' => $username,
+                        'conversation_id' => $conversation_id,
                     ],
                 ];
             }
@@ -64,6 +65,7 @@ class EnumClass
                         "title"=> $title[0],
                         "message"=> $message,
                         'username' => $username,
+                        'conversation_id' => $conversation_id,
                     ],
                 ];
             }

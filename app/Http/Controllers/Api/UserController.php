@@ -115,14 +115,14 @@ class UserController extends Controller
 
                 try {
                     if(empty($ders_idd)){
-                        EnumClass::sendNotification(User::where('id',Auth::id())->get()->pluck('name'),$message->text,$user->name,User::where('id',$users)->get()->pluck('device_mac_adress')->first(),$message,$ders_idd);
+                        EnumClass::sendNotification(User::where('id',Auth::id())->get()->pluck('name'),$message->text,$user->name,User::where('id',$users)->get()->pluck('device_mac_adress')->first(),$message,$ders_idd,$conversation->id);
 
                         //dd('girsene');
                     }
 
                     else{
 
-                        EnumClass::sendNotification(Ders::where('id',$id)->get()->pluck('ders_adi'),$message->text,$user->name,User::where('id',$users)->get()->pluck('device_mac_adress')->first(),$message,$ders_idd);
+                        EnumClass::sendNotification(Ders::where('id',$id)->get()->pluck('ders_adi'),$message->text,$user->name,User::where('id',$users)->get()->pluck('device_mac_adress')->first(),$message,$ders_idd,$conversation->id);
 
                         //dd('girme');
                     }
