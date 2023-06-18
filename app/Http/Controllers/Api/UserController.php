@@ -208,7 +208,7 @@ class UserController extends Controller
     public function getSingleChats()//Giriş Yapan Kişinin Sadece Özel Sohbetlerini Getirme
     {
         $user = Auth::user();
-        //$messages = Message::where('user_id',$user->id)->orderBy('created_at','desc')->get();
+        $messages = Message::where('user_id',$user->id)->orderBy('created_at','desc')->get();
 
 
         $user_conversations = UserConversation::where('user_id', $user->id)->get()->pluck('conversation_id');
@@ -219,11 +219,11 @@ class UserController extends Controller
         $conversations_id = Conversation::whereIn('id',$user_conversations)->where('ders_id',null)->get()->pluck('id');
         //Giriş yapan kişinin tekli sohbetlerini görüntülemek için ders idsi boş olan sohbetleri getirdik.
         $receiver_conversation_ids = UserConversation::where('user_id', '!=', $user->id)->whereIn('conversation_id', $conversations_id)->get()->pluck('user_id');
-        $receiver_conversation_names=User::whereIn('id',$receiver_conversation_ids)->get()->pluck('name');
+        //$receiver_conversation_names=User::whereIn('id',$receiver_conversation_ids)->get()->pluck('name');
         //dd($receiver_conversation_names);tekli sohbet ekranında sadece alıcı isminin yazılması için yazılan sorgular..
         //normal halinde hem gönderici ve hem alıcı isimleri var.
 
-        //$messagecount = $messages->count();
+        $messagecount = $messages->count();
 
         if (!$conversations){
             return response()->json([
@@ -237,9 +237,9 @@ class UserController extends Controller
             'user_id'=>$user->id,
             'logined_user_name'=>$user->name,
             'conversations' => $conversations,
-            'conversations_id'=>$conversations_id
-            //'messagecount' => $messagecount.' Mesaj Bulunmakta.',
-            //'message' => $messages
+            'conversations_id'=>$conversations_id,
+            'messagecount' => $messagecount.' Mesaj Bulunmakta.',
+            'message' => $messages,
 
         ]);
     }
