@@ -41,7 +41,7 @@ class EnumClass
 
                     'data' => [
                         "body" => $subTitle,
-                        "title"=> $title,
+                        "title"=> $title[0],
                         "message"=> $message,
                         'username' => $username,
                     ],
@@ -61,7 +61,7 @@ class EnumClass
 
                     'data' => [
                         "body" => $subTitle,
-                        "title"=> $title,
+                        "title"=> $title[0],
                         "message"=> $message,
                         'username' => $username,
                     ],

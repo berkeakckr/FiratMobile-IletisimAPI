@@ -301,7 +301,7 @@ class UserController extends Controller
         $user_conversation = UserConversation::where('user_id', $user->id)->where('conversation_id',$conversation_id)->first();
         //giriş yapan kişinin parametre olarak gönderilen id değerine ait user_convunu  bul
         $conversation = Conversation::find($conversation_id); //parametre olarak gönderilen id değerine ait dersi bul
-        $messages = Message::where('conversation_id',$conversation->id)->join('users', 'messages.user_id', '=', 'users.id')->orderBy('messages.created_at','desc')->get(['users.id','name','text']);
+        $messages = Message::where('conversation_id',$conversation->id)->join('users', 'messages.user_id', '=', 'users.id')->orderBy('messages.created_at','desc')->get(['messages.id','name','text','messages.user_id','file']);
 
 
         //mesajları azalan oluşturma sırasına göre getir
@@ -312,6 +312,7 @@ class UserController extends Controller
         return response()->json([
                 'user' => $user->name.'('.$user->email.')'.' Kişisine Ait Hesaptasınız.',
                 'user_id'=>$user->id,
+                //'message_id'=>$messages->id,
                 'logined_user_name'=>$user->name,
                 'conversation' => $conversation->title.' Mesaj Kutusundasınız',
                 'send_message'=>$user_conversation->send_message,
