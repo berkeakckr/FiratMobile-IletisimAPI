@@ -193,6 +193,18 @@ class UserController extends Controller
 
         ]);
     }
+
+    public function everyone_Chat(Request $request,$conversation_id)
+    {
+        $conversation=Conversation::find($conversation_id);
+
+        $conversation->everyone_chat = $request->everyone_chat;
+        $conversation->save();
+        return response()->json([
+            'mesaj' => 'Mesaj atma özelliği başarıyla değiştirildi.',
+        ]);
+
+    }
     public function dersler(){
         $dersler = OBSHelper::getCallDersler('190290054');
         return response()->json([
@@ -301,6 +313,7 @@ class UserController extends Controller
         $user_conversation = UserConversation::where('user_id', $user->id)->where('conversation_id',$conversation_id)->first();
         //giriş yapan kişinin parametre olarak gönderilen id değerine ait user_convunu  bul
         $conversation = Conversation::find($conversation_id); //parametre olarak gönderilen id değerine ait dersi bul
+        //everyone_Chat($conversation_id);
         $messages = Message::where('conversation_id',$conversation->id)->join('users', 'messages.user_id', '=', 'users.id')->orderBy('messages.created_at','desc')->get(['messages.id','name','text','messages.user_id','file']);
 
 
@@ -316,6 +329,7 @@ class UserController extends Controller
                 'logined_user_name'=>$user->name,
                 'conversation' => $conversation->title.' Mesaj Kutusundasınız',
                 'send_message'=>$user_conversation->send_message,
+                'everyone_chat'=>$conversation->everyone_chat,
                 'messages' => $messages,
             ]);
 

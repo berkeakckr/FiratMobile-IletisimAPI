@@ -28,7 +28,8 @@ Route::middleware('auth:api')->group(function()
         Route::post('/user/message/{conversation_id}','messageCreate');//Grup veya Özel Sohbette mesaj oluşturmak için
 
         //Route::delete('/user/message/{conversation_id}/{id}','messageDelete');//Grup veya Özel Sohbet içerisindeki Mesajı Silmek için
-        Route::post('/user/update_send_message/{user_conversation_id}','updateSendMessage');
+        //Route::post('/user/update_send_message/{user_conversation_id}','updateSendMessage');
+        Route::post('/user/update_everyone_chat/{conversation_id}','everyone_Chat');
         //sohbetteki kişinin mesaj atıp atmama durumunu güncellemek için oluşturulan route
     });
 
